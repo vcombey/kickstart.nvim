@@ -1,89 +1,3 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -91,7 +5,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -99,10 +13,10 @@ vim.g.have_nerd_font = false
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.o.number = true
+vim.o.number = false
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -156,7 +70,7 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 vim.o.inccommand = 'split'
 
 -- Show which line your cursor is on
-vim.o.cursorline = true
+vim.o.cursorline = false
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.o.scrolloff = 10
@@ -165,6 +79,75 @@ vim.o.scrolloff = 10
 -- instead raise a dialog asking if you wish to save the current file(s)
 -- See `:help 'confirm'`
 vim.o.confirm = true
+
+-- cmdheight controls the number of screen lines to use for the command-line
+-- Setting it to 1 gives a clean look while still showing important messages
+-- See `:help 'cmdheight'`
+vim.o.cmdheight = 1
+
+-- pumheight sets the maximum number of items to show in the popup menu (for completions)
+-- 10 is a good balance - not too overwhelming, but shows enough options
+-- See `:help 'pumheight'`
+vim.o.pumheight = 10
+
+-- showtabline controls when the tabline is shown
+-- 2 = always show tabline, even when there's only one tab
+-- This provides consistent UI and shows buffer information
+-- See `:help 'showtabline'`
+vim.o.showtabline = 2
+
+-- smartindent automatically indents new lines based on the previous line
+-- This is especially useful for programming languages with block structures
+-- See `:help 'smartindent'`
+vim.o.smartindent = true
+
+-- Disable swap files - they can be annoying in modern development
+-- With version control and auto-save, swap files are less necessary
+-- See `:help 'swapfile'`
+vim.o.swapfile = false
+
+-- termguicolors enables 24-bit RGB color in the terminal
+-- This allows for much richer colors and better theme support
+-- Make sure your terminal supports true colors!
+-- See `:help 'termguicolors'`
+vim.o.termguicolors = true
+
+-- writebackup creates a backup before overwriting a file, then deletes it
+-- We disable this for cleaner file management (version control handles this)
+-- See `:help 'writebackup'`
+vim.o.writebackup = false
+
+-- expandtab converts tabs to spaces when typing
+-- This ensures consistent indentation across different editors and systems
+-- See `:help 'expandtab'`
+vim.o.expandtab = true
+
+-- shiftwidth sets the number of spaces to use for each step of (auto)indent
+-- 2 spaces is common for many languages and provides good readability
+-- See `:help 'shiftwidth'`
+vim.o.shiftwidth = 2
+
+-- tabstop sets the number of spaces that a tab character represents
+-- Should match shiftwidth for consistency
+-- See `:help 'tabstop'`
+vim.o.tabstop = 2
+
+-- numberwidth sets the minimal number of columns to use for line numbers
+-- 4 provides enough space for most files while keeping it compact
+-- See `:help 'numberwidth'`
+vim.o.numberwidth = 4
+
+-- wrap controls whether long lines are visually wrapped
+-- Disabled for coding to see the actual line structure
+-- You can toggle this with `:set wrap` if needed
+-- See `:help 'wrap'`
+vim.o.wrap = true
+
+-- fillchars defines characters to use for various UI elements
+-- eob: character for empty lines below the buffer (empty = cleaner look)
+-- Using minimal settings to ensure compatibility across Neovim versions
+-- See `:help 'fillchars'` for all available options
+vim.o.fillchars = [[eob: ]]
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -180,9 +163,8 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.
 --
--- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
--- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', 'jk', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -194,16 +176,123 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-x>h', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-x>l', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-x>j', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('n', '<C-x>k', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<enter>', 'i', { desc = 'go to insert mode' })
 
--- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
--- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
--- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
--- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
--- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+-- Split current window vertically (creates a new window to the right)
+-- Alternative to the default `:vsplit` or `<C-w>v`
+-- TIP: Use this when you want to compare two files side by side
+vim.keymap.set('n', '<leader>v', '<C-w>v', { desc = 'Split window vertically' })
+
+-- Split current window horizontally (creates a new window below)
+-- Alternative to the default `:split` or `<C-w>s`
+-- TIP: Use this when you want to see two parts of the same file
+vim.keymap.set('n', '<leader>h', '<C-w>s', { desc = 'Split window horizontally' })
+
+-- Close current window (not the buffer, just the window)
+-- Safer than `:q` as it won't close Neovim if it's the last window
+-- See `:help CTRL-W_c` for more information
+vim.keymap.set('n', '<leader>x', '<C-w>c', { desc = 'Close current window' })
+
+-- [[ Buffer Management ]]
+-- Buffers represent files loaded in memory. These keymaps make it easier
+-- to navigate between different files without using the mouse
+
+-- Navigate to next buffer in the buffer list
+-- Much more convenient than `:bnext`
+-- TIP: Buffers are like tabs in other editors, but more powerful
+vim.keymap.set('n', '<Tab>', ':bnext<CR>', { desc = 'Next buffer' })
+
+-- Navigate to previous buffer in the buffer list
+-- Partner to the above keymap for easy buffer navigation
+vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { desc = 'Previous buffer' })
+
+-- Delete/close the current buffer
+-- Removes the file from memory but keeps the window open
+-- See `:help :bdelete` for differences between bdelete, bwipeout, etc.
+vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { desc = 'Delete buffer' })
+
+-- [[ Enhanced Text Editing ]]
+-- These keymaps improve the text editing experience by maintaining
+-- visual selection and providing better line movemlected line
+-- gv reselects, = reformats the selection
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=g", { desc = 'Move line down' })
+
+-- Move selected lines up
+-- Similar to the above but moves lines up instead
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=g", { desc = 'Move line up' })
+
+-- [[ Better Navigation with Centering ]]
+-- These keymaps improve navigation by keeping the cursor centered
+-- This reduces eye strain and makes it easier to maintain context
+
+-- Half page down and center the cursor
+-- 'zz' centers the current line in the window
+-- This prevents the cursor from going to the bottom of the screen
+--vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Half page down and center' })
+
+-- Half page up and center the cursor
+-- Partner to the above for upward navigation
+--vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Half page up and center' })
+
+-- Next search result and center
+-- 'zzzv' centers the line and opens any closed folds
+-- 'v' ensures we're in the right mode after the motion
+--vim.keymap.set('n', 'n', 'nzzzv', { desc = 'Next search result and center' })
+
+-- Previous search result and center
+-- Partner to the above for backward search navigation
+--vim.keymap.set('n', 'N', 'Nzzzv', { desc = 'Previous search result and center' })
+
+-- [[ File Operations ]]
+-- Quick access to common file operations
+
+-- Save current file
+-- Much faster than typing `:w<CR>`
+-- TIP: This works even if the file is readonly (will show an error)
+vim.keymap.set('n', '<leader>w', ':w<CR>', { desc = 'Save file' })
+
+-- Select all text in the current buffer
+-- 'gg' goes to the first line, 'V' enters line-wise visual mode, 'G' goes to last line
+-- Equivalent to Ctrl+A in most other editors
+vim.keymap.set('n', '<C-a>', 'ggVG', { desc = 'Select all' })
+
+-- [[ Clipboard Management ]]
+-- Better paste behavior that doesn't pollute your clipboard
+
+-- Paste without replacing clipboard content
+-- When you paste over selected text, the deleted text normally goes to clipboard
+-- "_d deletes to the "black hole" register (doesn't affect clipboard)
+-- P pastes before the cursor
+vim.keymap.set('x', 'p', '"_dP', { desc = 'Paste without replacing clipboard' })
+
+-- [[ LSP and Tool Management ]]
+-- Quick access to development tools and language server information
+
+-- Show LSP information for the current buffer
+-- Displays which language servers are attached, their status, and capabilities
+-- Very useful for debugging LSP issues
+vim.keymap.set('n', '<leader>li', '<cmd>LspInfo<cr>', { desc = 'LSP Info' })
+
+-- Restart all LSP clients for the current buffer
+-- Useful when language servers get stuck or need to reload configuration
+vim.keymap.set('n', '<leader>lr', '<cmd>LspRestart<cr>', { desc = 'LSP Restart' })
+
+-- Open Mason tool installer
+-- Mason manages LSP servers, formatters, linters, and other external tools
+-- See `:help mason.nvim` for more information
+vim.keymap.set('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })
+
+-- Open Lazy plugin manager
+-- Lazy is our plugin manager - use this to install, update, or remove plugins
+-- See `:help lazy.nvim` for more information
+vim.keymap.set('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
+vim.keymap.set('n', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
+vim.keymap.set('i', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
+vim.keymap.set('t', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -211,13 +300,13 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
 --  See `:help vim.hl.on_yank()`
-vim.api.nvim_create_autocmd('TextYankPost', {
-  desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
-  callback = function()
-    vim.hl.on_yank()
-  end,
-})
+--vim.api.nvim_create_autocmd('TextYankPost', {
+--  desc = 'Highlight when yanking (copying) text',
+--  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+--  callback = function()
+--    vim.hl.on_yank()
+--  end,
+--})
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -248,6 +337,1061 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
+
+  { -- Status line with Git integration and LSP information
+    -- Lualine provides a beautiful and informative status line at the bottom of your screen
+    -- It replaces the default Neovim status line with something much more useful
+    'nvim-lualine/lualine.nvim',
+
+    -- Load this plugin after other UI elements are loaded to avoid flicker
+    -- 'VeryLazy' means it loads after the initial startup process
+    event = 'VeryLazy',
+
+    -- Configuration options for lualine
+    opts = {
+      options = {
+        -- 'auto' automatically detects and uses the theme from your colorscheme
+        -- This ensures the status line matches your current theme
+        theme = 'auto',
+
+        -- Component separators appear between different sections
+        -- Using simple characters for a clean, modern look
+        component_separators = { left = '', right = '' },
+
+        -- Section separators create distinct visual sections
+        -- These create the "powerline" style appearance
+        section_separators = { left = '', right = '' },
+      },
+
+      -- Sections define what information appears where on the status line
+      -- The status line is divided into left (a,b,c) and right (x,y,z) sections
+      sections = {
+        -- Section A (leftmost): Current Vim mode (NORMAL, INSERT, VISUAL, etc.)
+        lualine_a = { 'mode' },
+
+        -- Section B: Git information and diagnostics
+        -- 'branch' shows current git branch
+        -- 'diff' shows git changes (+3 ~1 -2)
+        -- 'diagnostics' shows LSP errors/warnings
+        lualine_b = { 'branch', 'diff', 'diagnostics' },
+
+        -- Section C: Current filename
+        -- This is the main content area
+        lualine_c = { 'filename' },
+
+        -- Section X: File information
+        -- 'encoding' shows file encoding (utf-8, etc.)
+        -- 'fileformat' shows line endings (unix, dos, mac)
+        -- 'filetype' shows the detected file type
+        lualine_x = { 'encoding', 'fileformat', 'filetype' },
+
+        -- Section Y: File progress (percentage through file)
+        lualine_y = { 'progress' },
+
+        -- Section Z (rightmost): Cursor location (line:column)
+        lualine_z = { 'location' },
+      },
+    },
+  },
+
+  { -- Buffer tabs at the top of the screen
+    -- Bufferline shows your open buffers as tabs at the top, similar to browser tabs
+    -- This makes it easy to see and switch between multiple open files
+    'akinsho/bufferline.nvim',
+
+    -- Load after initial startup to avoid interfering with the startup screen
+    event = 'VeryLazy',
+
+    -- Key mappings specific to this plugin
+    -- These override the global Tab mappings we set earlier for better integration
+    keys = {
+      { '<C-l>', '<Cmd>BufferLineCycleNext<CR>', desc = 'Next tab' },
+      { '<C-h>', '<Cmd>BufferLineCyclePrev<CR>', desc = 'Prev tab' },
+    },
+
+    opts = {
+      options = {
+        -- 'buffers' mode shows actual Neovim buffers (files in memory)
+        -- Alternative is 'tabs' which shows Neovim tab pages
+        mode = 'buffers',
+
+        -- 'slant' creates angled separators between tabs for a modern look
+        -- Other options: 'thin', 'thick', 'padded_slant'
+        separator_style = 'slant',
+
+        -- false = only show bufferline when there are 2+ buffers
+        -- true = always show it (even with just one buffer)
+        always_show_bufferline = true,
+
+        -- Hide close buttons on individual buffers for a cleaner look
+        -- You can still close buffers with `:bdelete` or our <leader>bd mapping
+        show_buffer_close_icons = false,
+        show_close_icon = false,
+
+        -- Show file type icons if you have a Nerd Font installed
+        -- This uses nvim-web-devicons to show appropriate icons for each file type
+        color_icons = true,
+      },
+    },
+  },
+
+  { -- Welcome screen with quick actions
+    -- Dashboard provides a beautiful startup screen when you open Neovim without a file
+    -- Similar to the welcome screens in VSCode, Atom, or other modern editors
+    'nvimdev/dashboard-nvim',
+
+    -- Load immediately when Neovim starts (VimEnter event)
+    -- This ensures the dashboard appears right away
+    event = 'VimEnter',
+
+    -- Configuration is a function because we need to dynamically generate some content
+    opts = function()
+      -- ASCII art logo for the dashboard
+      -- This creates a nice visual header - you can customize this with any ASCII art
+      -- Tools like 'figlet' can generate ASCII text, or you can create custom designs
+      local logo = [[
+      ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+      ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+      ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+      ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+      ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+      ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+      ]]
+
+      -- Add padding above and below the logo for better visual spacing
+      logo = string.rep('\n', 8) .. logo .. '\n\n'
+
+      local opts = {
+        -- 'doom' theme provides a centered layout similar to Doom Emacs
+        -- Other options include 'hyper' for a different style
+        theme = 'doom',
+
+        hide = {
+          -- Keep the status line visible even on the dashboard
+          -- This maintains consistency with the rest of your Neovim experience
+          statusline = false,
+        },
+
+        config = {
+          -- Convert the logo string into individual lines for display
+          header = vim.split(logo, '\n'),
+
+          -- Center section contains the main action buttons
+          -- Each button has an action (command to run), description, icon, and key
+          center = {
+            -- Find files in current directory using Telescope
+            { action = 'Telescope find_files', desc = ' Find File', icon = ' ', key = 'f' },
+
+            -- Create a new empty buffer and enter insert mode
+            { action = 'ene | startinsert', desc = ' New File', icon = ' ', key = 'n' },
+
+            -- Show recently opened files
+            { action = 'Telescope oldfiles', desc = ' Recent Files', icon = ' ', key = 'r' },
+
+            -- Search for text across all files in the project
+            { action = 'Telescope live_grep', desc = ' Find Text', icon = ' ', key = 'g' },
+
+            -- Quick access to Neovim configuration files
+            { action = 'Telescope find_files cwd=~/.config/nvim', desc = ' Config', icon = ' ', key = 'c' },
+
+            -- Open the file explorer (also available with Ctrl+n)
+            { action = 'Neotree toggle', desc = ' Explorer', icon = ' ', key = 'e' },
+
+            -- Open the plugin manager
+            { action = 'Lazy', desc = ' Lazy', icon = '󰒲 ', key = 'l' },
+
+            -- Quit Neovim
+            { action = 'qa', desc = ' Quit', icon = ' ', key = 'q' },
+          },
+
+          -- Footer shows plugin loading statistics
+          -- This function runs each time the dashboard is displayed
+          footer = function()
+            local stats = require('lazy').stats()
+            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+            return { '⚡ Neovim loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms' }
+          end,
+        },
+      }
+
+      -- Format the center buttons for consistent spacing and appearance
+      for _, button in ipairs(opts.config.center) do
+        -- Add padding to make all descriptions the same width
+        button.desc = button.desc .. string.rep(' ', 43 - #button.desc)
+        -- Format how the key is displayed next to the description
+        button.key_format = '  %s'
+      end
+
+      -- Special handling if Lazy plugin manager is already open
+      -- This prevents conflicts between the dashboard and Lazy UI
+      if vim.o.filetype == 'lazy' then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd('User', {
+          pattern = 'DashboardLoaded',
+          callback = function()
+            require('lazy').show()
+          end,
+        })
+      end
+
+      return opts
+    end,
+  },
+
+  { -- Integrated terminal that floats over your code
+    -- ToggleTerm provides a better terminal experience than Neovim's built-in terminal
+    -- It can show terminals in floating windows, splits, or tabs
+    'akinsho/toggleterm.nvim',
+
+    -- Only load when we actually need terminal commands
+    -- This improves startup time since terminals aren't needed immediately
+    cmd = { 'ToggleTerm', 'TermExec' },
+
+    -- Keymaps for different terminal styles
+    keys = {
+      -- Floating terminal (appears over your code like a dropdown)
+      { '<leader>tf', '<cmd>ToggleTerm direction=float<cr>', desc = 'Terminal (float)' },
+
+      -- Horizontal split terminal (appears at bottom)
+      { '<leader>th', '<cmd>ToggleTerm direction=horizontal<cr>', desc = 'Terminal (horizontal)' },
+
+      -- Vertical split terminal (appears on the side)
+      { '<leader>tv', '<cmd>ToggleTerm direction=vertical size=80<cr>', desc = 'Terminal (vertical)' },
+    },
+
+    opts = {
+      -- Size for horizontal/vertical terminals (lines for horizontal, columns for vertical)
+      size = 20,
+
+      -- Hide line numbers in terminal windows (they're not useful there)
+      hide_numbers = true,
+
+      -- Add a subtle background to terminals to distinguish them
+      shade_terminals = true,
+      shading_factor = 2, -- How much darker to make the background
+
+      -- Start in insert mode (so you can type immediately)
+      start_in_insert = true,
+
+      -- Allow terminal to respond to insert mode key mappings
+      insert_mappings = true,
+
+      -- Remember terminal size between sessions
+      persist_size = true,
+
+      -- Default direction when using `:ToggleTerm` without arguments
+      direction = 'float',
+
+      -- Automatically close terminal when the process exits
+      close_on_exit = true,
+
+      -- Use the system shell (respects your SHELL environment variable)
+      shell = vim.o.shell,
+
+      -- Configuration for floating terminals
+      float_opts = {
+        -- 'curved' borders look modern and friendly
+        -- Other options: 'single', 'double', 'shadow', 'solid', 'rounded'
+        border = 'curved',
+
+        -- winblend controls transparency (0 = opaque, 100 = invisible)
+        winblend = 0,
+
+        -- Color scheme for the terminal border and background
+        highlights = {
+          border = 'Normal', -- Use normal text color for border
+          background = 'Normal', -- Use normal background color
+        },
+      },
+    },
+  },
+
+  { -- Modern file explorer with Git integration
+    -- Neo-tree is a modern file explorer that can show files, buffers, git status, and more
+    -- It's more feature-rich than the built-in netrw explorer
+    'nvim-neo-tree/neo-tree.nvim',
+
+    -- Use the v3.x branch for the latest stable features
+    branch = 'v3.x',
+
+    -- Only load when explicitly requested (improves startup time)
+    cmd = 'Neotree',
+
+    -- Key mappings for different Neo-tree modes
+    keys = {
+      -- Toggle file explorer in the current directory with Ctrl+n
+      -- This is a common keymap used in many editors like VSCode
+      { '<C-n>', '<cmd>Neotree toggle<cr>', desc = 'Toggle NeoTree Explorer' },
+
+      -- Toggle floating file explorer (appears over your code)
+      { '<leader>E', '<cmd>Neotree toggle float<cr>', desc = 'Explorer NeoTree (float)' },
+    },
+
+    -- Function to run when the plugin is deactivated
+    deactivate = function()
+      vim.cmd [[Neotree close]]
+    end,
+
+    -- Auto-open Neo-tree if Neovim is started with a directory argument
+    init = function()
+      -- Check if exactly one argument was passed to Neovim
+      if vim.fn.argc(-1) == 1 then
+        -- Check if that argument is a directory
+        local stat = vim.loop.fs_stat(vim.fn.argv(0))
+        if stat and stat.type == 'directory' then
+          -- Load Neo-tree to handle the directory
+          require 'neo-tree'
+        end
+      end
+    end,
+
+    opts = {
+      -- Different views available in Neo-tree
+      -- 'filesystem' = traditional file browser
+      -- 'buffers' = list of open buffers
+      -- 'git_status' = git changes overview
+      -- 'document_symbols' = LSP symbols in current file
+      sources = { 'filesystem', 'buffers', 'git_status', 'document_symbols' },
+
+      -- Prevent Neo-tree from replacing certain special buffer types
+      -- This ensures terminals, diagnostics, etc. don't get replaced by the file tree
+      open_files_do_not_replace_types = { 'terminal', 'Trouble', 'trouble', 'qf', 'Outline' },
+
+      filesystem = {
+        -- Don't change Neovim's working directory when navigating
+        -- This gives you more control over your project's root
+        bind_to_cwd = false,
+
+        -- Automatically expand to and highlight the current file
+        -- Makes it easy to see where you are in the project structure
+        follow_current_file = { enabled = true },
+
+        -- Use libuv for file watching (better performance and reliability)
+        -- Automatically refreshes when files are added/removed outside Neovim
+        use_libuv_file_watcher = true,
+      },
+
+      window = {
+        mappings = {
+          -- Disable space key (we use it as leader elsewhere)
+          ['<space>'] = 'none',
+
+          -- Copy file path to system clipboard
+          -- Useful for sharing file paths or using them in other applications
+          ['Y'] = {
+            function(state)
+              local node = state.tree:get_node()
+              local path = node:get_id()
+              vim.fn.setreg('+', path, 'c') -- '+' register is system clipboard
+            end,
+            desc = 'Copy Path to Clipboard',
+          },
+
+          -- Open file/directory with system default application
+          -- For example, open images in image viewer, PDFs in PDF reader
+          ['O'] = {
+            function(state)
+              local path = state.tree:get_node().path
+              vim.fn.jobstart({ 'open', path }, { detach = true }) -- macOS command
+              -- For Linux, you might want: vim.fn.jobstart({'xdg-open', path}, {detach = true})
+              -- For Windows: vim.fn.jobstart({'start', path}, {detach = true})
+            end,
+            desc = 'Open with System Application',
+          },
+        },
+      },
+
+      -- Configure how the tree structure is displayed
+      default_component_configs = {
+        indent = {
+          -- Show expand/collapse indicators for directories
+          with_expanders = true,
+
+          -- Icons for collapsed and expanded directories
+          -- These require a Nerd Font to display properly
+          expander_collapsed = '', -- Right-pointing triangle
+          expander_expanded = '', -- Down-pointing triangle
+          expander_highlight = 'NeoTreeExpander',
+        },
+      },
+    },
+
+    -- Required dependencies for Neo-tree functionality
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- Lua utility functions
+      'nvim-tree/nvim-web-devicons', -- File type icons
+      'MunifTanjim/nui.nvim', -- UI component library
+    },
+
+    -- Custom configuration function
+    config = function(_, opts)
+      require('neo-tree').setup(opts)
+
+      -- Auto-refresh git status when lazygit (external git tool) closes
+      -- This ensures the git status view stays up-to-date
+      vim.api.nvim_create_autocmd('TermClose', {
+        pattern = '*lazygit',
+        callback = function()
+          if package.loaded['neo-tree.sources.git_status'] then
+            require('neo-tree.sources.git_status').refresh()
+          end
+        end,
+      })
+    end,
+  },
+
+  -- [[ Text Objects and Motion Enhancement ]]
+  -- Text objects are one of Vim's most powerful features for precise text editing
+  -- They allow you to operate on logical units like words, sentences, paragraphs, etc.
+
+  { -- Advanced and customizable text objects
+    -- Mini.ai extends Neovim's built-in text objects with many more useful ones
+    -- Text objects work with operators: d(elete), c(hange), y(ank), v(isual select)
+    -- Format: [operator][a/i][text-object]
+    -- Examples: daw = delete a word, ci" = change inside quotes, yap = yank a paragraph
+    'echasnovski/mini.ai',
+
+    -- Load after other plugins to ensure treesitter is available
+    event = 'VeryLazy',
+
+    -- Configuration function to set up custom text objects
+    opts = function()
+      local ai = require 'mini.ai'
+      return {
+        -- How many lines to search for text objects (prevents hanging on huge files)
+        n_lines = 500,
+
+        -- Custom text objects using treesitter (syntax-aware)
+        custom_textobjects = {
+          -- 'o' for code block objects (if/else, loops, functions, etc.)
+          -- 'a' includes surrounding whitespace, 'i' only includes inner content
+          o = ai.gen_spec.treesitter({
+            a = { '@block.outer', '@conditional.outer', '@loop.outer' },
+            i = { '@block.inner', '@conditional.inner', '@loop.inner' },
+          }, {}),
+
+          -- 'f' for function objects
+          -- Examples: daf = delete entire function, cif = change function body
+          f = ai.gen_spec.treesitter({ a = '@function.outer', i = '@function.inner' }, {}),
+
+          -- 'c' for class objects
+          -- Examples: dac = delete entire class, cic = change class body
+          c = ai.gen_spec.treesitter({ a = '@class.outer', i = '@class.inner' }, {}),
+
+          -- 't' for HTML/XML tag objects
+          -- Examples: dat = delete entire tag, cit = change tag content
+          t = { '<([%p%w]-)%f[^<%w][^<>]->.-</%1>', '^<.->().*()</[^/]->$' },
+        },
+      }
+    end,
+  },
+
+  { -- Surround operations (add, delete, replace quotes, brackets, etc.)
+    -- Mini.surround makes it easy to work with surroundings like quotes, brackets, tags
+    -- This is incredibly useful for programming and text editing
+    'echasnovski/mini.surround',
+
+    -- Dynamic key setup to integrate with which-key descriptions
+    keys = function(_, keys)
+      local plugin = require('lazy.core.config').spec.plugins['mini.surround']
+      local opts = require('lazy.core.plugin').values(plugin, 'opts', false)
+      local mappings = {
+        -- Add surrounding around text object or visual selection
+        -- Example: gsaiw" adds quotes around current word
+        { opts.mappings.add, desc = 'Add surrounding', mode = { 'n', 'v' } },
+
+        -- Delete surrounding characters
+        -- Example: gsd" deletes surrounding quotes
+        { opts.mappings.delete, desc = 'Delete surrounding' },
+
+        -- Find next surrounding character to the right
+        { opts.mappings.find, desc = 'Find right surrounding' },
+
+        -- Find next surrounding character to the left
+        { opts.mappings.find_left, desc = 'Find left surrounding' },
+
+        -- Highlight surrounding characters (useful for visual feedback)
+        { opts.mappings.highlight, desc = 'Highlight surrounding' },
+
+        -- Replace one surrounding with another
+        -- Example: gsr"' replaces quotes with single quotes
+        { opts.mappings.replace, desc = 'Replace surrounding' },
+
+        -- Update how many lines to search (rarely needed)
+        { opts.mappings.update_n_lines, desc = 'Update `MiniSurround.config.n_lines`' },
+      }
+
+      -- Filter out any empty mappings
+      mappings = vim.tbl_filter(function(m)
+        return m[1] and #m[1] > 0
+      end, mappings)
+
+      return vim.list_extend(mappings, keys)
+    end,
+
+    opts = {
+      -- Custom keymaps for surround operations
+      -- Using 'gs' prefix to avoid conflicts with default Vim keymaps
+      mappings = {
+        add = 'gsa', -- Add surrounding
+        delete = 'gsd', -- Delete surrounding
+        find = 'gsf', -- Find surrounding
+        find_left = 'gsF', -- Find surrounding left
+        highlight = 'gsh', -- Highlight surrounding
+        replace = 'gsr', -- Replace surrounding
+        update_n_lines = 'gsn', -- Update search lines
+      },
+    },
+  },
+
+  -- [[ Code Quality and Formatting Plugins ]]
+  -- These plugins improve code readability and help maintain consistent formatting
+
+  { -- Smart commenting with language awareness
+    -- Comment.nvim provides intelligent commenting for any language
+    -- It automatically detects the correct comment syntax and handles edge cases
+    'numToStr/Comment.nvim',
+
+    -- Load when we start editing (VeryLazy = after initial UI setup)
+    event = 'VeryLazy',
+
+    -- Default configuration works great out of the box
+    -- Key mappings:
+    -- gcc = toggle line comment
+    -- gbc = toggle block comment
+    -- gc in visual mode = comment selection
+    -- gb in visual mode = block comment selection
+    opts = {},
+  },
+
+  { -- Automatic bracket/quote pairing
+    -- Automatically adds closing brackets, quotes, etc. when you type the opening one
+    -- Also provides smart deletion and navigation within pairs
+    'windwp/nvim-autopairs',
+
+    -- Only load when entering insert mode (when you actually need it)
+    event = 'InsertEnter',
+
+    -- Default configuration provides sensible pairing for:
+    -- Brackets: ( ) [ ] { }
+    -- Quotes: ' " `
+    -- HTML tags: < >
+    -- And many language-specific pairs
+    opts = {},
+  },
+
+  { -- Visual indentation guides
+    -- Shows vertical lines to help visualize indentation levels
+    -- Especially useful for languages like Python or deeply nested code
+    'lukas-reineke/indent-blankline.nvim',
+
+    -- Load after initial setup since it's a visual enhancement
+    event = 'VeryLazy',
+
+    opts = {
+      indent = {
+        -- Character to use for indent guides (requires Nerd Font)
+        char = ' ', -- Vertical line character
+        tab_char = ' ', -- Same character for tab indentation
+      },
+      -- char = '│', -- Vertical line character
+      -- tab_char = '│', -- Same character for tab indentation
+
+      -- Disable scope highlighting (can be distracting)
+      -- Scope would highlight the current indentation level
+      scope = { enabled = false },
+
+      -- Don't show indent guides in certain file types where they're not useful
+      exclude = {
+        filetypes = {
+          'help', -- Help documentation
+          'alpha', -- Alpha dashboard
+          'dashboard', -- Dashboard plugin
+          'neo-tree', -- File explorer
+          'Trouble', -- Diagnostics
+          'trouble', -- Diagnostics (lowercase)
+          'lazy', -- Plugin manager
+          'mason', -- Tool installer
+          'notify', -- Notifications
+          'toggleterm', -- Terminal
+          'lazyterm', -- Lazy terminal
+        },
+      },
+    },
+
+    -- Use 'ibl' as the main module (new name for indent-blankline)
+    main = 'ibl',
+  },
+
+  -- Git integration
+  {
+    'sindrets/diffview.nvim',
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewToggleFiles', 'DiffviewFocusFiles' },
+    opts = {},
+    keys = {
+      { '<leader>gd', '<cmd>DiffviewOpen<cr>', desc = 'DiffView' },
+    },
+  },
+
+  -- Todo comments
+  {
+    'folke/todo-comments.nvim',
+    event = 'VeryLazy',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {},
+  },
+
+  { -- Enhanced text objects for better code navigation
+    -- Provides additional text objects beyond the built-in ones
+    -- These work great with Haskell's functional programming constructs
+    'kana/vim-textobj-user',
+
+    -- Load related text object plugins
+    dependencies = {
+      -- 'ae' and 'ie' text objects for entire buffer
+      -- Useful for operations on the whole file
+      { 'kana/vim-textobj-entire' },
+
+      -- 'al' and 'il' text objects for current line
+      -- Handy for line-based operations
+      { 'kana/vim-textobj-line' },
+
+      -- 'ai' and 'ii' text objects for same indentation level
+      -- Perfect for Haskell's indentation-sensitive syntax
+      { 'kana/vim-textobj-indent' },
+    },
+  },
+
+  { -- Unicode symbol concealing for Haskell (as specifically requested)
+    -- Replaces Haskell operators with Unicode symbols for better readability
+    -- Examples: -> becomes →, <= becomes ≤, forall becomes ∀, :: becomes ∷
+    -- This makes Haskell code more mathematical and easier to read
+    'Twinside/vim-haskellConceal',
+
+    -- Only load for Haskell files to avoid affecting other languages
+    ft = 'haskell',
+
+    -- Configuration to automatically enable concealing for Haskell files
+    config = function()
+      -- Set up autocommand to enable concealing when opening Haskell files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = function()
+          -- Enable concealing (level 2 shows concealed text with replacement)
+          vim.opt_local.conceallevel = 2
+
+          -- Set conceal cursor to not show concealed text when cursor is on the line
+          -- 'n' = normal mode, 'i' = insert mode, 'c' = command mode, 'v' = visual mode
+          vim.opt_local.concealcursor = 'nc'
+
+          -- Notify that concealing is enabled
+        end,
+      })
+
+      -- Set up keymaps to toggle concealing easily
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = function()
+          local opts = { noremap = true, silent = true, buffer = true }
+
+          -- Toggle concealing on/off
+          vim.keymap.set('n', '<leader>tc', function()
+            if vim.o.conceallevel == 0 then
+              vim.opt_local.conceallevel = 2
+              vim.notify('Haskell concealing enabled', vim.log.levels.INFO)
+            else
+              vim.opt_local.conceallevel = 0
+              vim.notify('Haskell concealing disabled', vim.log.levels.INFO)
+            end
+          end, vim.tbl_extend('force', opts, { desc = 'Toggle Haskell concealing' }))
+        end,
+      })
+    end,
+
+    -- Note: Concealing transforms operators for display only - your actual code remains unchanged
+    -- Common transformations:
+    -- -> becomes →    (right arrow)
+    -- <- becomes ←    (left arrow)
+    -- => becomes ⇒    (double right arrow)
+    -- :: becomes ∷    (proportion)
+    -- forall becomes ∀ (for all quantifier)
+    -- lambda becomes λ (lambda symbol)
+    -- You can toggle with <leader>tc or :set conceallevel=0/2
+  },
+
+  { -- Enhanced Haskell syntax highlighting and indentation
+    -- Provides much better syntax highlighting than Neovim's built-in Haskell support
+    -- Recognizes modern Haskell language extensions and features
+    'neovimhaskell/haskell-vim',
+
+    -- Only load for Haskell files
+    ft = 'haskell',
+
+    -- Enable support for various Haskell language extensions
+    -- These improve syntax highlighting for advanced Haskell features
+    init = function()
+      -- Quantified constraints (forall a. ...)
+      vim.g.haskell_enable_quantification = 1
+
+      -- Recursive do-notation (mdo syntax)
+      vim.g.haskell_enable_recursivedo = 1
+
+      -- Arrow syntax for programming with arrows
+      vim.g.haskell_enable_arrowsyntax = 1
+
+      -- Pattern synonyms (allows custom pattern matching)
+      vim.g.haskell_enable_pattern_synonyms = 1
+
+      -- Type roles for type safety
+      vim.g.haskell_enable_typeroles = 1
+
+      -- Static pointers for distributed programming
+      vim.g.haskell_enable_static_pointers = 1
+
+      -- Backpack module system support
+      vim.g.haskell_backpack = 1
+    end,
+  },
+
+  { -- Complete Haskell development environment with automatic toolchain management
+    -- This is the main plugin for Haskell development - it provides LSP integration,
+    -- REPL support, debugging, and many other professional development features
+    -- Enhanced to automatically handle different GHC versions per project
+    'mrcjkb/haskell-tools.nvim',
+
+    -- Use version 3.x for stability
+    version = '^3',
+
+    -- Load for all Haskell-related file types
+    ft = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+
+    dependencies = {
+      -- Required for various utility functions
+      'nvim-lua/plenary.nvim',
+    },
+
+    -- Configuration options for haskell-tools.nvim
+    -- This plugin uses opts instead of a setup function
+    opts = {
+      -- HLS (Haskell Language Server) configuration
+      hls = {
+        -- Default settings for HLS - can be overridden per project
+        default_settings = {
+          haskell = {
+            -- Formatting settings
+            formattingProvider = 'stylish-haskell', -- or 'fourmolu', 'stylish-haskell', 'brittany'
+
+            -- Enable/disable various HLS features
+            checkProject = true, -- Check the entire project, not just open files
+            maxCompletions = 40, -- Limit number of completions
+
+            -- Plugin settings
+            plugin = {
+              -- Enable specific HLS plugins
+              ['ghcide-completions'] = { enabled = true },
+              ['ghcide-hover-and-symbols'] = { enabled = true },
+              ['ghcide-type-lenses'] = { enabled = true },
+
+              -- Import management
+              importLens = { enabled = true },
+              moduleName = { enabled = true },
+
+              -- Code actions
+              refineImports = { enabled = true },
+              retrie = { enabled = true },
+
+              -- Formatting
+              -- ormolu = { enabled = true },
+              -- fourmolu = { enabled = true },
+              stylishHaskell = { enabled = true }, -- Disable if using ormolu/fourmolu
+
+              -- Evaluation
+              eval = { enabled = true },
+
+              -- Class and instance suggestions
+              class = { enabled = true },
+              pragmas = { enabled = true },
+
+              -- Hlint integration
+              hlint = { enabled = true },
+            },
+          },
+        },
+      },
+
+      -- Tools configuration for automatic installation and management
+      tools = {
+        -- REPL configuration
+        repl = {
+          -- Auto-detect whether to use Stack, Cabal, or plain GHCi
+          -- Stack and Cabal will use the project-specific GHC version
+          auto_focus = true, -- Automatically focus REPL window when opened
+          builtin = true, -- Use Neovim's built-in terminal for REPL
+        },
+
+        -- Hover configuration
+        hover = {
+          -- Enable automatic hover when cursor stops
+          auto = false,
+          -- Show border around hover window
+          border = 'rounded',
+        },
+
+        -- Definition preview configuration
+        definition = {
+          -- Enable automatic preview when navigating to definitions
+          auto = false,
+        },
+      },
+
+      -- DAP (Debug Adapter Protocol) configuration for Haskell debugging
+      dap = {
+        -- Automatically set up debugging for Haskell
+        auto_setup = true,
+      },
+    },
+
+    -- Enhanced configuration with automatic GHC version detection and toolchain management
+    -- Note: haskell-tools.nvim automatically configures itself, so we set up keymaps and autocommands
+    config = function()
+      local ht = require 'haskell-tools'
+
+      -- Set up autocommand for Haskell-specific keymaps and project detection
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+        callback = function(event)
+          local bufnr = event.buf
+          local opts = { noremap = true, silent = true, buffer = bufnr }
+
+          -- Check for Stack or Cabal configuration files to determine project type
+          local cwd = vim.fn.getcwd()
+
+          -- Look for stack.yaml (Stack project)
+          if vim.fn.filereadable(cwd .. '/stack.yaml') == 1 then
+            vim.notify('Detected Stack project - using Stack resolver GHC version', vim.log.levels.INFO)
+            -- Stack automatically handles GHC versions based on the resolver
+
+            -- Look for cabal.project or *.cabal files (Cabal project)
+          elseif vim.fn.filereadable(cwd .. '/cabal.project') == 1 or #vim.fn.glob(cwd .. '/*.cabal', false, true) > 0 then
+            vim.notify('Detected Cabal project - using project GHC version', vim.log.levels.INFO)
+            -- Cabal projects should use GHCup to manage GHC versions
+          else
+            -- Standalone Haskell file
+            vim.notify('Standalone Haskell file - using system GHC', vim.log.levels.INFO)
+          end
+
+          -- NOTE: haskell-language-server (HLS) relies heavily on code lenses
+          -- Code lenses provide contextual actions like "Add type signature", "Import module", etc.
+          -- Auto-refresh is enabled by default to keep these up-to-date
+
+          -- Set up Haskell-specific keymaps
+
+          -- Run code lens action under cursor
+          -- Code lenses show contextual actions like type signatures, imports, etc.
+          vim.keymap.set('n', '<space>cl', vim.lsp.codelens.run, opts)
+
+          -- Hoogle search for the type signature under cursor
+          -- Hoogle is Haskell's search engine - searches by type signatures and names
+          -- This is incredibly useful for discovering functions or understanding types
+          vim.keymap.set('n', '<space>hs', ht.hoogle.hoogle_signature, opts)
+
+          -- Evaluate all code snippets in the current buffer
+          -- Uses GHCi to evaluate Haskell expressions and show results inline
+          -- Great for testing small pieces of code without leaving the editor
+          vim.keymap.set('n', '<space>ea', ht.lsp.buf_eval_all, opts)
+
+          -- Toggle GHCi REPL for the current package
+          -- GHCi (Glasgow Haskell Compiler Interactive) is Haskell's REPL
+          -- This loads your entire project so you can test functions interactively
+          vim.keymap.set('n', '<leader>rr', ht.repl.toggle, opts)
+
+          -- Toggle GHCi REPL for just the current buffer
+          -- Useful when you want to test just the current module
+          vim.keymap.set('n', '<leader>rf', function()
+            ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+          end, opts)
+
+          -- Quit the REPL
+          -- Clean way to close the interactive session
+          vim.keymap.set('n', '<leader>rq', ht.repl.quit, opts)
+
+          -- Additional useful Haskell keymaps
+
+          -- Show type signature under cursor
+          vim.keymap.set('n', '<space>ht', function()
+            vim.lsp.buf.hover()
+          end, opts)
+
+          -- Go to definition (works with Haskell imports and local definitions)
+          vim.keymap.set('n', '<space>gd', function()
+            vim.lsp.buf.definition()
+          end, opts)
+
+          -- Find references (useful for refactoring)
+          vim.keymap.set('n', '<space>gr', function()
+            vim.lsp.buf.references()
+          end, opts)
+
+          -- Rename symbol (safe refactoring across the project)
+          vim.keymap.set('n', '<space>rn', function()
+            vim.lsp.buf.rename()
+          end, opts)
+
+          -- Format the current buffer with the configured formatter (ormolu/fourmolu)
+          vim.keymap.set('n', '<space>hf', function()
+            vim.lsp.buf.format { async = true }
+          end, opts)
+        end,
+      })
+
+      -- Helper function to check and install required tools
+      local function ensure_haskell_tools()
+        local tools_to_check = {
+          'ghc', -- Glasgow Haskell Compiler
+          'cabal', -- Cabal build tool
+          'stack', -- Stack build tool (optional)
+          'haskell-language-server', -- Language server
+          'ormolu', -- Code formatter
+          'hlint', -- Linter
+        }
+
+        for _, tool in ipairs(tools_to_check) do
+          if vim.fn.executable(tool) == 0 then
+            vim.notify('Missing Haskell tool: ' .. tool .. '. Consider installing via GHCup or your package manager.', vim.log.levels.WARN)
+          end
+        end
+      end
+
+      -- Check for required tools when Haskell files are opened
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = ensure_haskell_tools,
+        once = true, -- Only check once per session
+      })
+    end,
+  },
+
+  -- Additional useful plugins for development
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'VeryLazy',
+    opts = {},
+  },
+
+  -- Better quickfix window
+  {
+    'kevinhwang91/nvim-bqf',
+    ft = 'qf',
+    opts = {},
+  },
+
+  -- Color highlighter
+  {
+    'norcalli/nvim-colorizer.lua',
+    event = 'VeryLazy',
+    config = function()
+      require('colorizer').setup()
+    end,
+  },
+
+  -- Better notifications
+  {
+    'rcarriga/nvim-notify',
+    event = 'VeryLazy',
+    opts = {
+      timeout = 3000,
+      max_height = function()
+        return math.floor(vim.o.lines * 0.75)
+      end,
+      max_width = function()
+        return math.floor(vim.o.columns * 0.75)
+      end,
+      render = 'default',
+      stages = 'fade_in_slide_out',
+    },
+    config = function(_, opts)
+      require('notify').setup(opts)
+      vim.notify = require 'notify'
+    end,
+  },
+
+  -- Zen mode for distraction-free coding
+  {
+    'folke/zen-mode.nvim',
+    cmd = 'ZenMode',
+    keys = { { '<leader>z', '<cmd>ZenMode<cr>', desc = 'Zen Mode' } },
+    opts = {
+      window = {
+        width = 90,
+        options = {
+          signcolumn = 'no',
+          number = false,
+          relativenumber = false,
+          cursorline = false,
+          cursorcolumn = false,
+          foldcolumn = '0',
+          list = false,
+        },
+      },
+    },
+  },
+
+  { -- Alternative colorscheme with multiple variants
+    -- Catppuccin is a beautiful, warm colorscheme with excellent plugin integration
+    -- It comes in 4 flavors: Latte (light), Frappe, Macchiato, and Mocha (dark)
+    'catppuccin/nvim',
+    name = 'catppuccin',
+
+    -- High priority ensures it loads early for consistent theming
+    priority = 1000,
+
+    opts = {
+      -- Choose the flavor/variant of Catppuccin
+      flavour = 'mocha', -- Options: latte, frappe, macchiato, mocha
+
+      -- Automatic light/dark mode switching based on system preference
+      background = { light = 'latte', dark = 'mocha' },
+
+      -- Visual appearance settings
+      transparent_background = false, -- Set to true for terminal transparency
+      show_end_of_buffer = false, -- Hide tildes at end of file
+      term_colors = false, -- Don't set terminal colors
+      dim_inactive = { enabled = false }, -- Don't dim inactive windows
+
+      -- Typography settings - customize to your preference
+      no_italic = false, -- Allow italic text
+      no_bold = false, -- Allow bold text
+      no_underline = false, -- Allow underlined text
+
+      -- Syntax highlighting styles for different code elements
+      styles = {
+        comments = { 'italic' }, -- Make comments italic
+        conditionals = { 'italic' }, -- Make if/else/etc italic
+        loops = {}, -- Default style for loops
+        functions = {}, -- Default style for functions
+        keywords = { 'italic' }, -- Default style for keywords
+        strings = {}, -- Default style for strings
+        variables = {}, -- Default style for variables
+        numbers = {}, -- Default style for numbers
+        booleans = {}, -- Default style for true/false
+        properties = {}, -- Default style for object properties
+        types = { 'italic' }, -- Default style for type annotations
+        operators = {}, -- Default style for +, -, etc.
+      },
+
+      -- Integration with other plugins for consistent theming
+      integrations = {
+        cmp = true, -- Completion menu theming
+        gitsigns = true, -- Git signs in gutter
+        nvimtree = true, -- File explorer theming
+        treesitter = true, -- Syntax highlighting
+        notify = false, -- Notification theming
+        mini = { enabled = true }, -- Mini.nvim plugins
+        telescope = { enabled = true }, -- Fuzzy finder theming
+        which_key = true, -- Keymap helper theming
+      },
+    },
+  },
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -310,43 +1454,26 @@ require('lazy').setup({
         mappings = vim.g.have_nerd_font,
         -- If you are using a Nerd Font: set icons.keys to an empty table which will use the
         -- default which-key.nvim defined Nerd Font icons, otherwise define a string table
-        keys = vim.g.have_nerd_font and {} or {
-          Up = '<Up> ',
-          Down = '<Down> ',
-          Left = '<Left> ',
-          Right = '<Right> ',
-          C = '<C-…> ',
-          M = '<M-…> ',
-          D = '<D-…> ',
-          S = '<S-…> ',
-          CR = '<CR> ',
-          Esc = '<Esc> ',
-          ScrollWheelDown = '<ScrollWheelDown> ',
-          ScrollWheelUp = '<ScrollWheelUp> ',
-          NL = '<NL> ',
-          BS = '<BS> ',
-          Space = '<Space> ',
-          Tab = '<Tab> ',
-          F1 = '<F1>',
-          F2 = '<F2>',
-          F3 = '<F3>',
-          F4 = '<F4>',
-          F5 = '<F5>',
-          F6 = '<F6>',
-          F7 = '<F7>',
-          F8 = '<F8>',
-          F9 = '<F9>',
-          F10 = '<F10>',
-          F11 = '<F11>',
-          F12 = '<F12>',
-        },
+        keys = {},
       },
 
-      -- Document existing key chains
+      -- Document existing key chains for better organization and discoverability
+      -- Which-key will show these group descriptions when you press the leader key
+      -- This makes it much easier to discover and remember keymaps
       spec = {
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>s', group = '[S]earch' }, -- Telescope search functions
+        { '<leader>t', group = '[T]oggle' }, -- Toggle various features
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Git hunk operations
+        { '<leader>g', group = '[G]it' }, -- Git operations
+        { '<leader>b', group = '[B]uffer' }, -- Buffer managemmnt
+        { '<leader>r', group = '[R]epl/[R]eplace' }, -- REPL and replace operations
+        { '<leader>f', group = '[F]ormat' }, -- Code formatting
+        { '<leader>w', group = '[W]orkspace' }, -- Workspace operations
+        { '<leader>d', group = '[D]iagnostics' }, -- LSP diagnostics
+        { '<leader>c', group = '[C]ode' }, -- Code actions
+        { '<leader>l', group = '[L]SP' }, -- LSP management
+        { '<leader>x', group = 'E[x]it/Close' }, -- Close operations
+        { '<leader>v', group = '[V]ertical Split' }, -- Window splitting
       },
     },
   },
@@ -619,7 +1746,7 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client_supports_method(client, vim.lsp.protocol.Methods.textDocument_inlayHint, event.buf) then
-            map('<leader>th', function()
+            map('<leader>ti', function()
               vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
             end, '[T]oggle Inlay [H]ints')
           end
@@ -698,6 +1825,24 @@ require('lazy').setup({
             },
           },
         },
+
+        -- Haskell Language Server (configured via haskell-tools.nvim)
+        -- Note: haskell-tools.nvim automatically configures haskell-language-server
+        -- so we don't need to add it here, but we could add other servers if needed
+
+        -- Additional language servers you might want to add:
+        bashls = {}, -- Bash LSP
+        cssls = {}, -- CSS LSP
+        html = {}, -- HTML LSP
+        jsonls = {}, -- JSON LSP
+        yamlls = {}, -- YAML LSP
+        marksman = {}, -- Markdown LSP
+        ts_ls = {}, -- TypeScript/JavaScript LSP
+        eslint = {}, -- ESLint LSP
+        pyright = {}, -- Python LSP
+        rust_analyzer = {}, -- Rust LSP
+        -- clangd = {},        -- C/C++ LSP
+        -- gopls = {},         -- Go LSP
       }
 
       -- Ensure the servers and tools above are installed
@@ -716,6 +1861,10 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        -- Haskell tools (haskell-language-server is installed via haskell-tools.nvim)
+        -- 'fourmolu', -- Haskell formatter
+        -- 'ormolu', -- Alternative Haskell formatter
+        'hlint', -- Haskell linter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -768,6 +1917,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        -- Haskell formatters
+        haskell = { 'stylish-haskell', stop_after_first = true },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -850,7 +2001,7 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = { auto_show = true, auto_show_delay_ms = 500 },
       },
 
       sources = {
@@ -894,57 +2045,82 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'catppuccin-mocha'
     end,
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  -- { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
 
-  { -- Collection of various small independent plugins/modules
-    'echasnovski/mini.nvim',
-    config = function()
-      -- Better Around/Inside textobjects
-      --
-      -- Examples:
-      --  - va)  - [V]isually select [A]round [)]paren
-      --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-      --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+  -- { -- Collection of various small independent plugins/modules
+  --   'echasnovski/mini.nvim',
+  --   config = function()
+  --     -- Better Around/Inside textobjects
+  --     --
+  --     -- Examples:
+  --     --  - va)  - [V]isually select [A]round [)]paren
+  --     --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
+  --     --  - ci'  - [C]hange [I]nside [']quote
+  --     require('mini.ai').setup { n_lines = 500 }
 
-      -- Add/delete/replace surroundings (brackets, quotes, etc.)
-      --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+  --     -- Add/delete/replace surroundings (brackets, quotes, etc.)
+  --     --
+  --     -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
+  --     -- - sd'   - [S]urround [D]elete [']quotes
+  --     -- - sr)'  - [S]urround [R]eplace [)] [']
+  --     require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+  --     -- Simple and easy statusline.
+  --     --  You could remove this setup call if you don't like it,
+  --     --  and try some other statusline plugin
+  --     local statusline = require 'mini.statusline'
+  --     -- set use_icons to true if you have a Nerd Font
+  --     statusline.setup { use_icons = vim.g.have_nerd_font }
 
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+  --     -- You can configure sections in the statusline by overriding their
+  --     -- default behavior. For example, here we set the section for
+  --     -- cursor location to LINE:COLUMN
+  --     ---@diagnostic disable-next-line: duplicate-set-field
+  --     statusline.section_location = function()
+  --       return '%2l:%-2v'
+  --     end
 
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
-    end,
-  },
+  --     -- ... and there is more!
+  --     --  Check out: https://github.com/echasnovski/mini.nvim
+  --   end,
+  -- },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'haskell',
+        'json',
+        'yaml',
+        'toml',
+        'css',
+        'javascript',
+        'typescript',
+        'python',
+        'rust',
+        'go',
+        'dockerfile',
+        'gitignore',
+        'sql',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -994,21 +2170,7 @@ require('lazy').setup({
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
     -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
-    icons = vim.g.have_nerd_font and {} or {
-      cmd = '⌘',
-      config = '🛠',
-      event = '📅',
-      ft = '📂',
-      init = '⚙',
-      keys = '🗝',
-      plugin = '🔌',
-      runtime = '💻',
-      require = '🌙',
-      source = '📄',
-      start = '🚀',
-      task = '📌',
-      lazy = '💤 ',
-    },
+    icons = vim.g.have_nerd_font and {},
   },
 })
 
