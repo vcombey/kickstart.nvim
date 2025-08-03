@@ -29,6 +29,7 @@ return {
             temperature = 0.75,
             max_tokens = 20480,
           },
+          api_key_name = 'AVANTE_ANTHROPIC_API_KEY',
         },
       },
 
@@ -83,7 +84,20 @@ return {
     dependencies = {
       'nvim-lua/plenary.nvim',
       'MunifTanjim/nui.nvim',
-      'stevearc/dressing.nvim', -- Clean input dialogs
+      {
+        'stevearc/dressing.nvim', -- Clean input dialogs
+        opts = {
+          input = {
+            enabled = true,
+            start_mode = 'insert',
+            border = 'rounded',
+            relative = 'cursor',
+          },
+        },
+        config = function(_, opts)
+          require('dressing').setup(opts)
+        end,
+      },
       'nvim-tree/nvim-web-devicons', -- Icons
     },
 
