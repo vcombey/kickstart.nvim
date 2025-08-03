@@ -1,7 +1,7 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --
-vim.keymap.set('n', '<leader>r', function()
+vim.keymap.set('n', '<leader>k', function()
   dofile(vim.env.MYVIMRC)
 end)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -13,12 +13,14 @@ vim.g.have_nerd_font = true
 
 -- [[ Set API Keys Early ]]
 -- Load Anthropic API key for AI features (needs to be early for plugins like Avante)
+local config_path = vim.fn.stdpath('config')
+local api_key_file = config_path .. '/anthropic_key.lua'
+
 local ok, api_key = pcall(function()
-  return require 'anthropic_key'
+  return dofile(api_key_file)
 end)
-if ok and api_key then
-  vim.env.ANTHROPIC_API_KEY = api_key
-end
+
+vim.env.AVANTE_ANTHROPIC_API_KEY = api_key
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -319,6 +321,7 @@ if vim.g.neovide then
   vim.g.neovide_scroll_animation_far_lines = 0
   vim.g.neovide_hide_mouse_when_typing = true
 
+  vim.g.neovide_scale_factor = 1.3
   -- Font scaling keymaps (Cmd+ and Cmd-)
   vim.keymap.set({ 'n', 'i', 'v' }, '<D-=>', function()
     vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
