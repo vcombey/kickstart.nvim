@@ -4,3 +4,6 @@ test.sh
 nvim
 
 spell/
+
+# API Keys (keep secure)
+anthropic_key.lua

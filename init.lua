@@ -294,6 +294,49 @@ vim.keymap.set('n', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc 
 vim.keymap.set('i', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
 vim.keymap.set('t', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
 
+-- [[ Neovide Configuration ]]
+-- Check if running in Neovide and apply specific settings
+if vim.g.neovide then
+  -- Disable animations for better performance and less distraction
+  vim.g.neovide_cursor_animation_length = 0
+  vim.g.neovide_cursor_trail_size = 0
+  vim.g.neovide_position_animation_length = 0
+  vim.g.neovide_scroll_animation_length = 0
+  vim.g.neovide_scroll_animation_far_lines = 0
+  vim.g.neovide_hide_mouse_when_typing = true
+
+  -- Font scaling keymaps (Cmd+ and Cmd-)
+  vim.keymap.set({'n', 'i', 'v'}, '<D-=>', function()
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 1.1
+  end, { desc = 'Increase font size' })
+
+  vim.keymap.set({'n', 'i', 'v'}, '<D-->', function()
+    vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * 0.9
+  end, { desc = 'Decrease font size' })
+
+  -- Reset font size
+  vim.keymap.set({'n', 'i', 'v'}, '<D-0>', function()
+    vim.g.neovide_scale_factor = 1.0
+  end, { desc = 'Reset font size' })
+
+  -- Set Anthropic API key for AI features (if you're using any AI plugins)
+  -- You can set this environment variable in your shell profile or here
+  if not vim.env.ANTHROPIC_API_KEY then
+    -- Replace 'your-api-key-here' with your actual API key
+    -- Or better yet, create a ~/.config/nvim/anthropic_key.lua file with:
+    -- return "your-actual-api-key"
+    local ok, api_key = pcall(function()
+      return require('anthropic_key')
+    end)
+    if ok and api_key then
+      vim.env.ANTHROPIC_API_KEY = api_key
+    else
+      -- Fallback: uncomment and add your key directly (less secure)
+      -- vim.env.ANTHROPIC_API_KEY = "your-api-key-here"
+    end
+  end
+end
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
