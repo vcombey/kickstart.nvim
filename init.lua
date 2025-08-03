@@ -1336,6 +1336,127 @@ require('lazy').setup({
     },
   },
 
+  { -- AI-powered code assistant with chat and editing capabilities
+    -- Avante.nvim provides advanced AI assistance directly in Neovim
+    -- Features include: code completion, chat interface, code editing suggestions,
+    -- and intelligent refactoring - essentially bringing GitHub Copilot-like features
+    -- with additional chat functionality for more interactive AI assistance
+    'yetone/avante.nvim',
+
+    -- Load when editing files (when you actually need AI assistance)
+    event = 'VeryLazy',
+
+    -- Use stable releases for reliability
+    version = false, -- Set to false to use latest features, or specify version like "v0.1.0"
+
+    -- Load when explicitly triggered (remove automatic keys to avoid conflicts)
+    cmd = { 'AvanteToggle', 'AvanteAsk', 'AvanteEdit', 'AvanteRefresh', 'AvanteFocus' },
+
+    opts = {
+      -- 🎯 CURSOR-LIKE EXPERIENCE - Minimal & Clean
+      provider = 'claude',
+
+      providers = {
+        claude = {
+          endpoint = 'https://api.anthropic.com',
+          model = 'claude-sonnet-4-20250514',
+          timeout = 30000,
+          extra_request_body = {
+            temperature = 0.75,
+            max_tokens = 20480,
+          },
+        },
+      },
+
+      -- Cursor-style clean interface
+      windows = {
+        position = 'right',
+        width = 40,
+        wrap = true,
+        input = {
+          height = 8, -- Multiline prompt by default
+          min_height = 4,
+          max_height = 20, -- Extensible
+          auto_resize = true,
+        },
+      },
+
+            -- Simple behavior like Cursor
+      behaviour = {
+        auto_suggestions = false, -- Keep it simple like Cursor
+        auto_apply_diff_after_generation = false,
+        support_paste_from_clipboard = false, -- Fix clipboard issues
+      },
+
+      -- Let avante use default mappings to avoid nil errors
+      -- We'll override the submit key in a safer way
+
+            -- Disable ALL UI clutter completely
+      hints = { enabled = false },
+      repo_map = { enabled = false }, -- No todos
+      input_hints = { enabled = false },
+      show_input_hint = false, -- Disable the function causing the error
+
+      -- Hide token counts and progress
+      ui = {
+        show_tokens = false, -- No token indication
+        show_model = false, -- No model name showing
+        show_datetime = false, -- No datetime
+        show_progress = false, -- No progress indicators
+      },
+
+      -- Clean sidebar without footer/header
+      sidebar = {
+        header = { enabled = false }, -- No header
+        footer = { enabled = false }, -- No footer
+        title = '', -- No title
+      },
+
+      debug = false,
+    },
+
+    -- Minimal dependencies for Cursor-like experience
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+      'stevearc/dressing.nvim', -- Clean input dialogs
+      'nvim-tree/nvim-web-devicons', -- Icons
+    },
+
+    -- Simplified configuration function
+    config = function(_, opts)
+      -- Simple setup with error handling
+      local ok, avante = pcall(require, 'avante')
+      if not ok then
+        vim.notify('Failed to load avante.nvim: ' .. tostring(avante), vim.log.levels.ERROR)
+        return
+      end
+
+      local setup_ok, err = pcall(avante.setup, opts)
+      if not setup_ok then
+        vim.notify('Failed to setup avante.nvim: ' .. tostring(err), vim.log.levels.ERROR)
+        return
+      end
+
+      -- Simple Cursor-like keymaps
+      vim.schedule(function()
+        local opts = { noremap = true, silent = true }
+
+        -- Main AI chat (like Cursor's cmd+i)
+        vim.keymap.set('n', '<leader>aa', '<cmd>AvanteToggle<cr>', vim.tbl_extend('force', opts, { desc = '🤖 AI Chat (Cursor-style)' }))
+
+        -- Quick AI access from any mode (like Cursor's quick AI)
+        vim.keymap.set({ 'n', 'v', 'i' }, '<C-;>', '<cmd>AvanteAsk<cr>', vim.tbl_extend('force', opts, { desc = '⚡ Quick AI Chat' }))
+
+        -- AI code editing (like Cursor's inline AI)
+        vim.keymap.set({ 'n', 'v' }, '<leader>ae', '<cmd>AvanteEdit<cr>', vim.tbl_extend('force', opts, { desc = '✨ AI Edit Code' }))
+      end)
+    end,
+
+    -- Simple build step
+    build = vim.fn.has 'win32' ~= 0 and 'powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' or 'make',
+  },
+
   { -- Alternative colorscheme with multiple variants
     -- Catppuccin is a beautiful, warm colorscheme with excellent plugin integration
     -- It comes in 4 flavors: Latte (light), Frappe, Macchiato, and Mocha (dark)
@@ -1474,6 +1595,17 @@ require('lazy').setup({
         { '<leader>l', group = '[L]SP' }, -- LSP management
         { '<leader>x', group = 'E[x]it/Close' }, -- Close operations
         { '<leader>v', group = '[V]ertical Split' }, -- Window splitting
+        { '<leader>a', group = '🤖 AI Assistant (Cursor-style)' }, -- Clean AI assistance like Cursor
+        { '<C-;>', desc = '⚡ Quick AI Chat' }, -- Quick AI access like Cursor
+        { '<leader>p', desc = '🎯 Command Palette' }, -- VS Code style command palette
+        { '<leader>P', desc = '🎯 Enhanced Command Palette' }, -- Enhanced command palette
+        { '<C-S-P>', desc = '🎯 Mega Command Palette (Categories)' }, -- Ctrl+Shift+P like VS Code
+        { '<C-p>', desc = '📁 Quick Open Files' }, -- Ctrl+P like VS Code
+        { '<C-S-F>', desc = '🔍 Search Everywhere' }, -- Ctrl+Shift+F like VS Code
+        { '<C-t>', desc = '🎯 Go to Symbol in Workspace' }, -- Ctrl+T like VS Code
+        { '<C-S-O>', desc = '📋 Go to Symbol in File' }, -- Ctrl+Shift+O like VS Code
+        { '<leader>;', desc = '📜 Command History' }, -- Command history
+        { '<leader>:', desc = '🔍 Search History' }, -- Search history
       },
     },
   },
@@ -1563,6 +1695,213 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- Command Palette - VS Code style Cmd+Shift+P equivalent
+      -- This gives you access to ALL available commands, functions, and actions
+      vim.keymap.set('n', '<leader>p', builtin.commands, { desc = '🎯 Command Palette (All Commands)' })
+
+      -- Alternative command palette with more options
+      vim.keymap.set('n', '<leader>P', function()
+        builtin.commands {
+          prompt_title = '🎯 Command Palette - All Available Commands',
+          layout_config = {
+            width = 0.8,
+            height = 0.8,
+            preview_cutoff = 120,
+          },
+        }
+      end, { desc = '🎯 Enhanced Command Palette' })
+
+      -- Quick access to specific command categories
+      vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
+      vim.keymap.set('n', '<leader>sp', function()
+        -- Search through all Telescope pickers (meta!)
+        builtin.builtin {
+          prompt_title = '🔭 Telescope Pickers',
+          include_extensions = true,
+        }
+      end, { desc = '[S]earch [P]ickers (Telescope)' })
+
+      -- Enhanced Command Palette functionality
+      -- This creates a mega command palette with multiple categories
+      vim.keymap.set('n', '<C-S-P>', function() -- Ctrl+Shift+P (closest to Cmd+Shift+P)
+        local actions = require 'telescope.actions'
+        local action_state = require 'telescope.actions.state'
+        local finders = require 'telescope.finders'
+        local pickers = require 'telescope.pickers'
+        local conf = require('telescope.config').values
+
+        -- Define command categories like VS Code
+        local command_categories = {
+          {
+            category = '📋 General Commands',
+            picker = function()
+              builtin.commands()
+            end,
+            desc = 'All Vim/Neovim commands',
+          },
+          {
+            category = '🔑 Keymaps',
+            picker = function()
+              builtin.keymaps()
+            end,
+            desc = 'Search all keymaps',
+          },
+          {
+            category = '📁 Files',
+            picker = function()
+              builtin.find_files()
+            end,
+            desc = 'Find files in project',
+          },
+          {
+            category = '🔍 Search Text',
+            picker = function()
+              builtin.live_grep()
+            end,
+            desc = 'Search text in project',
+          },
+          {
+            category = '📚 Help Tags',
+            picker = function()
+              builtin.help_tags()
+            end,
+            desc = 'Search help documentation',
+          },
+          {
+            category = '🔧 LSP Actions',
+            picker = function()
+              vim.lsp.buf.code_action()
+            end,
+            desc = 'Code actions for current buffer',
+          },
+          {
+            category = '📊 Diagnostics',
+            picker = function()
+              builtin.diagnostics()
+            end,
+            desc = 'Show project diagnostics',
+          },
+          {
+            category = '🎯 Telescope Pickers',
+            picker = function()
+              builtin.builtin()
+            end,
+            desc = 'All Telescope pickers',
+          },
+          {
+            category = '📜 Command History',
+            picker = function()
+              builtin.command_history()
+            end,
+            desc = 'Recent command history',
+          },
+          {
+            category = '🔄 Recent Files',
+            picker = function()
+              builtin.oldfiles()
+            end,
+            desc = 'Recently opened files',
+          },
+          {
+            category = '💾 Buffers',
+            picker = function()
+              builtin.buffers()
+            end,
+            desc = 'Open buffers',
+          },
+          {
+            category = '📝 Registers',
+            picker = function()
+              builtin.registers()
+            end,
+            desc = 'Vim registers content',
+          },
+          {
+            category = '🏷️ Tags',
+            picker = function()
+              builtin.tags()
+            end,
+            desc = 'Project tags (if available)',
+          },
+          {
+            category = '🌿 Git Files',
+            picker = function()
+              builtin.git_files()
+            end,
+            desc = 'Git tracked files',
+          },
+          {
+            category = '📈 Git Status',
+            picker = function()
+              builtin.git_status()
+            end,
+            desc = 'Git status',
+          },
+        }
+
+        pickers
+          .new({}, {
+            prompt_title = '🎯 Command Palette - Choose Category',
+            finder = finders.new_table {
+              results = command_categories,
+              entry_maker = function(entry)
+                return {
+                  value = entry,
+                  display = entry.category .. ' - ' .. entry.desc,
+                  ordinal = entry.category .. ' ' .. entry.desc,
+                }
+              end,
+            },
+            sorter = conf.generic_sorter {},
+            attach_mappings = function(prompt_bufnr, map)
+              actions.select_default:replace(function()
+                actions.close(prompt_bufnr)
+                local selection = action_state.get_selected_entry()
+                selection.value.picker()
+              end)
+              return true
+            end,
+          })
+          :find()
+      end, { desc = '🎯 Mega Command Palette (Categories)' })
+
+      -- Additional VS Code-like shortcuts for familiar workflow
+      -- These provide quick access to common actions without going through the command palette
+
+      -- Quick Open (Ctrl+P / Cmd+P equivalent)
+      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = '📁 Quick Open Files' })
+
+      -- Search everywhere (Ctrl+Shift+F / Cmd+Shift+F equivalent)
+      vim.keymap.set('n', '<C-S-F>', builtin.live_grep, { desc = '🔍 Search Everywhere' })
+
+      -- Go to symbol in workspace (Ctrl+T / Cmd+T equivalent)
+      vim.keymap.set('n', '<C-t>', function()
+        -- Try workspace symbols first, fall back to document symbols
+        local clients = vim.lsp.get_clients()
+        if #clients > 0 then
+          builtin.lsp_workspace_symbols()
+        else
+          builtin.treesitter()
+        end
+      end, { desc = '🎯 Go to Symbol in Workspace' })
+
+      -- Go to symbol in file (Ctrl+Shift+O / Cmd+Shift+O equivalent)
+      vim.keymap.set('n', '<C-S-O>', function()
+        -- Try LSP document symbols first, fall back to treesitter
+        local clients = vim.lsp.get_clients()
+        if #clients > 0 then
+          builtin.lsp_document_symbols()
+        else
+          builtin.treesitter()
+        end
+      end, { desc = '📋 Go to Symbol in File' })
+
+      -- Command history (useful for repeating complex commands)
+      vim.keymap.set('n', '<leader>;', builtin.command_history, { desc = '📜 Command History' })
+
+      -- Search history (useful for repeating searches)
+      vim.keymap.set('n', '<leader>:', builtin.search_history, { desc = '🔍 Search History' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
