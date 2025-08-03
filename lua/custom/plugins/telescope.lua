@@ -81,7 +81,7 @@ return {
 
       -- Command Palette - VS Code style Cmd+Shift+P equivalent
       -- This gives you access to ALL available commands, functions, and actions
-      vim.keymap.set('n', '<leader>p', builtin.commands, { desc = '🎯 Command Palette (All Commands)' })
+      vim.keymap.set('n', '<leader>cp', builtin.commands, { desc = '🎯 Command Palette (All Commands)' })
 
       -- Alternative command palette with more options
       vim.keymap.set('n', '<leader>P', function()
@@ -330,23 +330,23 @@ return {
       -- Which-key will show these group descriptions when you press the leader key
       -- This makes it much easier to discover and remember keymaps
       spec = {
-        { '<leader>s', group = '[S]earch' }, -- Telescope search functions
+        { '<leader>s', group = '[S]earch/Sessions' }, -- Telescope search functions and sessions
         { '<leader>t', group = '[T]oggle' }, -- Toggle various features
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Git hunk operations
         { '<leader>g', group = '[G]it' }, -- Git operations
         { '<leader>b', group = '[B]uffer' }, -- Buffer managemmnt
-        { '<leader>f', group = '[F]ormat' }, -- Code formatting
+        { '<leader>f', group = '[F]ormat/Find' }, -- Code formatting and file finding
+        { '<leader>p', group = '[P]rojects' }, -- Project management
         { '<leader>w', group = '[W]orkspace' }, -- Workspace operations
         { '<leader>d', group = '[D]iagnostics' }, -- LSP diagnostics
-        { '<leader>c', group = '[C]ode' }, -- Code actions
+        { '<leader>c', group = '[C]ode/Commands' }, -- Code actions and commands
         { '<leader>l', group = '[L]SP' }, -- LSP management
         { '<leader>x', group = 'E[x]it/Close' }, -- Close operations
         { '<leader>v', group = '[V]ertical Split' }, -- Window splitting
         { '<leader>a', group = '🤖 AI Assistant (Cursor-style)' }, -- Clean AI assistance like Cursor
         { '<C-;>', desc = '⚡ Quick AI Chat' }, -- Quick AI access like Cursor
-        { '<leader>p', desc = '🎯 Command Palette' }, -- VS Code style command palette
         { '<leader>P', desc = '🎯 Enhanced Command Palette' }, -- Enhanced command palette
-        { '<C-S-P>', desc = '🎯 Mega Command Palette (Categories)' }, -- Ctrl+Shift+P like VS Code
+        { '<C-S-P>', desc = '📁 Quick Project Switcher' }, -- Project switcher like VSCode
         { '<C-p>', desc = '📁 Quick Open Files' }, -- Ctrl+P like VS Code
         { '<C-S-F>', desc = '🔍 Search Everywhere' }, -- Ctrl+Shift+F like VS Code
         { '<C-t>', desc = '🎯 Go to Symbol in Workspace' }, -- Ctrl+T like VS Code
