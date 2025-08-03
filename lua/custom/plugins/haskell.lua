@@ -1,0 +1,311 @@
+-- Haskell development environment and tools
+return {
+  { -- Unicode symbol concealing for Haskell (as specifically requested)
+    -- Replaces Haskell operators with Unicode symbols for better readability
+    -- Examples: -> becomes →, <= becomes ≤, forall becomes ∀, :: becomes ∷
+    -- This makes Haskell code more mathematical and easier to read
+    'Twinside/vim-haskellConceal',
+
+    -- Only load for Haskell files to avoid affecting other languages
+    ft = 'haskell',
+
+    -- Configuration to automatically enable concealing for Haskell files
+    config = function()
+      -- Set up autocommand to enable concealing when opening Haskell files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = function()
+          -- Enable concealing (level 2 shows concealed text with replacement)
+          vim.opt_local.conceallevel = 2
+
+          -- Set conceal cursor to not show concealed text when cursor is on the line
+          -- 'n' = normal mode, 'i' = insert mode, 'c' = command mode, 'v' = visual mode
+          vim.opt_local.concealcursor = 'nc'
+
+          -- Notify that concealing is enabled
+        end,
+      })
+
+      -- Set up keymaps to toggle concealing easily
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = function()
+          local opts = { noremap = true, silent = true, buffer = true }
+
+          -- Toggle concealing on/off
+          vim.keymap.set('n', '<leader>tc', function()
+            if vim.o.conceallevel == 0 then
+              vim.opt_local.conceallevel = 2
+              vim.notify('Haskell concealing enabled', vim.log.levels.INFO)
+            else
+              vim.opt_local.conceallevel = 0
+              vim.notify('Haskell concealing disabled', vim.log.levels.INFO)
+            end
+          end, vim.tbl_extend('force', opts, { desc = 'Toggle Haskell concealing' }))
+        end,
+      })
+    end,
+
+    -- Note: Concealing transforms operators for display only - your actual code remains unchanged
+    -- Common transformations:
+    -- -> becomes →    (right arrow)
+    -- <- becomes ←    (left arrow)
+    -- => becomes ⇒    (double right arrow)
+    -- :: becomes ∷    (proportion)
+    -- forall becomes ∀ (for all quantifier)
+    -- lambda becomes λ (lambda symbol)
+    -- You can toggle with <leader>tc or :set conceallevel=0/2
+  },
+
+  { -- Enhanced Haskell syntax highlighting and indentation
+    -- Provides much better syntax highlighting than Neovim's built-in Haskell support
+    -- Recognizes modern Haskell language extensions and features
+    'neovimhaskell/haskell-vim',
+
+    -- Only load for Haskell files
+    ft = 'haskell',
+
+    -- Enable support for various Haskell language extensions
+    -- These improve syntax highlighting for advanced Haskell features
+    init = function()
+      -- Quantified constraints (forall a. ...)
+      vim.g.haskell_enable_quantification = 1
+
+      -- Recursive do-notation (mdo syntax)
+      vim.g.haskell_enable_recursivedo = 1
+
+      -- Arrow syntax for programming with arrows
+      vim.g.haskell_enable_arrowsyntax = 1
+
+      -- Pattern synonyms (allows custom pattern matching)
+      vim.g.haskell_enable_pattern_synonyms = 1
+
+      -- Type roles for type safety
+      vim.g.haskell_enable_typeroles = 1
+
+      -- Static pointers for distributed programming
+      vim.g.haskell_enable_static_pointers = 1
+
+      -- Backpack module system support
+      vim.g.haskell_backpack = 1
+    end,
+  },
+
+  { -- Complete Haskell development environment with automatic toolchain management
+    -- This is the main plugin for Haskell development - it provides LSP integration,
+    -- REPL support, debugging, and many other professional development features
+    -- Enhanced to automatically handle different GHC versions per project
+    'mrcjkb/haskell-tools.nvim',
+
+    -- Use version 3.x for stability
+    version = '^3',
+
+    -- Load for all Haskell-related file types
+    ft = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+
+    dependencies = {
+      -- Required for various utility functions
+      'nvim-lua/plenary.nvim',
+    },
+
+    -- Configuration options for haskell-tools.nvim
+    -- This plugin uses opts instead of a setup function
+    opts = {
+      -- HLS (Haskell Language Server) configuration
+      hls = {
+        -- Default settings for HLS - can be overridden per project
+        default_settings = {
+          haskell = {
+            -- Formatting settings
+            formattingProvider = 'stylish-haskell', -- or 'fourmolu', 'stylish-haskell', 'brittany'
+
+            -- Enable/disable various HLS features
+            checkProject = true, -- Check the entire project, not just open files
+            maxCompletions = 40, -- Limit number of completions
+
+            -- Plugin settings
+            plugin = {
+              -- Enable specific HLS plugins
+              ['ghcide-completions'] = { enabled = true },
+              ['ghcide-hover-and-symbols'] = { enabled = true },
+              ['ghcide-type-lenses'] = { enabled = true },
+
+              -- Import management
+              importLens = { enabled = true },
+              moduleName = { enabled = true },
+
+              -- Code actions
+              refineImports = { enabled = true },
+              retrie = { enabled = true },
+
+              -- Formatting
+              -- ormolu = { enabled = true },
+              -- fourmolu = { enabled = true },
+              stylishHaskell = { enabled = true }, -- Disable if using ormolu/fourmolu
+
+              -- Evaluation
+              eval = { enabled = true },
+
+              -- Class and instance suggestions
+              class = { enabled = true },
+              pragmas = { enabled = true },
+
+              -- Hlint integration
+              hlint = { enabled = true },
+            },
+          },
+        },
+      },
+
+      -- Tools configuration for automatic installation and management
+      tools = {
+        -- REPL configuration
+        repl = {
+          -- Auto-detect whether to use Stack, Cabal, or plain GHCi
+          -- Stack and Cabal will use the project-specific GHC version
+          auto_focus = true, -- Automatically focus REPL window when opened
+          builtin = true, -- Use Neovim's built-in terminal for REPL
+        },
+
+        -- Hover configuration
+        hover = {
+          -- Enable automatic hover when cursor stops
+          auto = false,
+          -- Show border around hover window
+          border = 'rounded',
+        },
+
+        -- Definition preview configuration
+        definition = {
+          -- Enable automatic preview when navigating to definitions
+          auto = false,
+        },
+      },
+
+      -- DAP (Debug Adapter Protocol) configuration for Haskell debugging
+      dap = {
+        -- Automatically set up debugging for Haskell
+        auto_setup = true,
+      },
+    },
+
+    -- Enhanced configuration with automatic GHC version detection and toolchain management
+    -- Note: haskell-tools.nvim automatically configures itself, so we set up keymaps and autocommands
+    config = function()
+      local ht = require 'haskell-tools'
+
+      -- Set up autocommand for Haskell-specific keymaps and project detection
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+        callback = function(event)
+          local bufnr = event.buf
+          local opts = { noremap = true, silent = true, buffer = bufnr }
+
+          -- Check for Stack or Cabal configuration files to determine project type
+          local cwd = vim.fn.getcwd()
+
+          -- Look for stack.yaml (Stack project)
+          if vim.fn.filereadable(cwd .. '/stack.yaml') == 1 then
+            vim.notify('Detected Stack project - using Stack resolver GHC version', vim.log.levels.INFO)
+            -- Stack automatically handles GHC versions based on the resolver
+
+            -- Look for cabal.project or *.cabal files (Cabal project)
+          elseif vim.fn.filereadable(cwd .. '/cabal.project') == 1 or #vim.fn.glob(cwd .. '/*.cabal', false, true) > 0 then
+            vim.notify('Detected Cabal project - using project GHC version', vim.log.levels.INFO)
+            -- Cabal projects should use GHCup to manage GHC versions
+          else
+            -- Standalone Haskell file
+            vim.notify('Standalone Haskell file - using system GHC', vim.log.levels.INFO)
+          end
+
+          -- NOTE: haskell-language-server (HLS) relies heavily on code lenses
+          -- Code lenses provide contextual actions like "Add type signature", "Import module", etc.
+          -- Auto-refresh is enabled by default to keep these up-to-date
+
+          -- Set up Haskell-specific keymaps
+
+          -- Run code lens action under cursor
+          -- Code lenses show contextual actions like type signatures, imports, etc.
+          vim.keymap.set('n', '<space>cl', vim.lsp.codelens.run, opts)
+
+          -- Hoogle search for the type signature under cursor
+          -- Hoogle is Haskell's search engine - searches by type signatures and names
+          -- This is incredibly useful for discovering functions or understanding types
+          vim.keymap.set('n', '<space>hs', ht.hoogle.hoogle_signature, opts)
+
+          -- Evaluate all code snippets in the current buffer
+          -- Uses GHCi to evaluate Haskell expressions and show results inline
+          -- Great for testing small pieces of code without leaving the editor
+          vim.keymap.set('n', '<space>ea', ht.lsp.buf_eval_all, opts)
+
+          -- Toggle GHCi REPL for the current package
+          -- GHCi (Glasgow Haskell Compiler Interactive) is Haskell's REPL
+          -- This loads your entire project so you can test functions interactively
+          -- vim.keymap.set('n', '<leader>rr', ht.repl.toggle, opts)
+
+          -- Toggle GHCi REPL for just the current buffer
+          -- Useful when you want to test just the current module
+          -- vim.keymap.set('n', '<leader>rf', function()
+          --   ht.repl.toggle(vim.api.nvim_buf_get_name(0))
+          -- end, opts)
+
+          -- Quit the REPL
+          -- Clean way to close the interactive session
+          -- vim.keymap.set('n', '<leader>rq', ht.repl.quit, opts)
+
+          -- Additional useful Haskell keymaps
+
+          -- Show type signature under cursor
+          vim.keymap.set('n', '<space>ht', function()
+            vim.lsp.buf.hover()
+          end, opts)
+
+          -- Go to definition (works with Haskell imports and local definitions)
+          vim.keymap.set('n', '<space>gd', function()
+            vim.lsp.buf.definition()
+          end, opts)
+
+          -- Find references (useful for refactoring)
+          vim.keymap.set('n', '<space>gr', function()
+            vim.lsp.buf.references()
+          end, opts)
+
+          -- Rename symbol (safe refactoring across the project)
+          vim.keymap.set('n', '<space>rn', function()
+            vim.lsp.buf.rename()
+          end, opts)
+
+          -- Format the current buffer with the configured formatter (ormolu/fourmolu)
+          vim.keymap.set('n', '<space>hf', function()
+            vim.lsp.buf.format { async = true }
+          end, opts)
+        end,
+      })
+
+      -- Helper function to check and install required tools
+      local function ensure_haskell_tools()
+        local tools_to_check = {
+          'ghc', -- Glasgow Haskell Compiler
+          'cabal', -- Cabal build tool
+          'stack', -- Stack build tool (optional)
+          'haskell-language-server', -- Language server
+          'ormolu', -- Code formatter
+          'hlint', -- Linter
+        }
+
+        for _, tool in ipairs(tools_to_check) do
+          if vim.fn.executable(tool) == 0 then
+            vim.notify('Missing Haskell tool: ' .. tool .. '. Consider installing via GHCup or your package manager.', vim.log.levels.WARN)
+          end
+        end
+      end
+
+      -- Check for required tools when Haskell files are opened
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'haskell',
+        callback = ensure_haskell_tools,
+        once = true, -- Only check once per session
+      })
+    end,
+  },
+}
