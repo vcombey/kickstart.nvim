@@ -125,6 +125,7 @@ return {
 
         -- Quick AI access from any mode (like Cursor's quick AI)
         vim.keymap.set({ 'n', 'v', 'i' }, '<D-;>', '<cmd>AvanteAsk<cr>', vim.tbl_extend('force', opts, { desc = '⚡ Quick AI Chat' }))
+        vim.keymap.set({ 'n', 'v', 'i' }, '<C-;>', '<cmd>AvanteAsk<cr>', vim.tbl_extend('force', opts, { desc = '⚡ Quick AI Chat' }))
 
         -- AI code editing (like Cursor's inline AI)
         vim.keymap.set({ 'n', 'v' }, '<leader>ae', '<cmd>AvanteEdit<cr>', vim.tbl_extend('force', opts, { desc = '✨ AI Edit Code' }))
@@ -135,3 +136,4 @@ return {
     build = vim.fn.has 'win32' ~= 0 and 'powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' or 'make',
   },
 }
+

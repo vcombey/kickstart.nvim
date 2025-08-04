@@ -28,7 +28,7 @@ return {
           -- Haskell project patterns
           'stack.yaml',
           'cabal.project',
-          '*.cabal'
+          '*.cabal',
         },
 
         -- Table of lsp clients to ignore by name
@@ -52,7 +52,7 @@ return {
         scope_chdir = 'global',
 
         -- Path where project.nvim will store the project history for use in telescope
-        datapath = vim.fn.stdpath('data'),
+        datapath = vim.fn.stdpath 'data',
       }
     end,
   },
@@ -65,53 +65,44 @@ return {
     },
     config = function()
       -- Load the project extension for telescope
-      require('telescope').load_extension('project')
+      require('telescope').load_extension 'project'
 
       -- Keymaps for project management
-      local builtin = require('telescope.builtin')
+      local builtin = require 'telescope.builtin'
 
       -- Main project picker - shows recent projects
       vim.keymap.set('n', '<leader>fp', function()
-        require('telescope').extensions.project.project{
+        require('telescope').extensions.project.project {
           display_type = 'full',
           theme = 'dropdown',
           previewer = false,
         }
       end, { desc = '📁 Find [P]rojects (Recent Workspaces)' })
 
-      -- Quick project switcher (alternative key)
-      vim.keymap.set('n', '<C-S-P>', function()
-        require('telescope').extensions.project.project{
-          display_type = 'full',
-          theme = 'dropdown',
-          previewer = false,
-        }
-      end, { desc = '📁 Quick Project Switcher' })
-
       -- Add current directory as a project
       vim.keymap.set('n', '<leader>pa', function()
         require('project_nvim.project').add_project()
-        print('✅ Added current directory to projects')
+        print '✅ Added current directory to projects'
       end, { desc = '[P]roject [A]dd current directory' })
 
       -- Remove current project from history
       vim.keymap.set('n', '<leader>pr', function()
         require('project_nvim.project').delete_project()
-        print('🗑️ Removed current project from history')
+        print '🗑️ Removed current project from history'
       end, { desc = '[P]roject [R]emove from history' })
 
       -- Open project in current window
       vim.keymap.set('n', '<leader>po', function()
-        require('telescope').extensions.project.project{
+        require('telescope').extensions.project.project {
           action = function(selection)
             -- Change to the project directory
             vim.cmd('cd ' .. selection.path)
             -- Close any open file tree
-            vim.cmd('Neotree close')
+            vim.cmd 'Neotree close'
             -- Open file tree in new project
-            vim.cmd('Neotree show')
+            vim.cmd 'Neotree show'
             print('📁 Switched to project: ' .. selection.name)
-          end
+          end,
         }
       end, { desc = '[P]roject [O]pen in current window' })
     end,
@@ -138,7 +129,7 @@ return {
         auto_create_enabled = false,
 
         -- Session save location
-        auto_session_root_dir = vim.fn.stdpath('data') .. '/sessions/',
+        auto_session_root_dir = vim.fn.stdpath 'data' .. '/sessions/',
 
         -- Files to ignore when creating sessions
         auto_session_suppress_dirs = {
@@ -146,7 +137,7 @@ return {
           '~/Projects',
           '~/Downloads',
           '/',
-          '/tmp'
+          '/tmp',
         },
 
         -- Integration with project.nvim
@@ -163,13 +154,13 @@ return {
 
         -- Pre and post hooks
         pre_save_cmds = {
-          "Neotree close", -- Close file tree before saving session
-          "cclose",        -- Close quickfix
-          "lclose",        -- Close location list
+          'Neotree close', -- Close file tree before saving session
+          'cclose', -- Close quickfix
+          'lclose', -- Close location list
         },
 
         post_restore_cmds = {
-          "Neotree show", -- Reopen file tree after restoring
+          'Neotree show', -- Reopen file tree after restoring
         },
       }
 
@@ -180,18 +171,19 @@ return {
 
       vim.keymap.set('n', '<leader>ss', function()
         require('auto-session').SaveSession()
-        print('💾 Session saved')
+        print '💾 Session saved'
       end, { desc = '[S]ave [S]ession' })
 
       vim.keymap.set('n', '<leader>sr', function()
         require('auto-session').RestoreSession()
-        print('🔄 Session restored')
+        print '🔄 Session restored'
       end, { desc = '[S]ession [R]estore' })
 
       vim.keymap.set('n', '<leader>sd', function()
         require('auto-session').DeleteSession()
-        print('🗑️ Session deleted')
+        print '🗑️ Session deleted'
       end, { desc = '[S]ession [D]elete' })
     end,
   },
 }
+

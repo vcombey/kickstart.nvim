@@ -36,10 +36,13 @@ return {
       auto_install = true,
       highlight = {
         enable = true,
+        -- Disable Treesitter highlighting for Haskell to allow concealing to work
+        -- Concealing plugins depend on traditional vim syntax highlighting
+        disable = { 'haskell' },
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
         --  If you are experiencing weird indenting issues, add the language to
         --  the list of additional_vim_regex_highlighting and disabled languages for indent.
-        additional_vim_regex_highlighting = { 'ruby' },
+        additional_vim_regex_highlighting = { 'ruby', 'haskell' },
       },
       indent = { enable = true, disable = { 'ruby' } },
     },

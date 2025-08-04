@@ -53,6 +53,15 @@ return {
         -- Section Z (rightmost): Cursor location (line:column)
         lualine_z = { 'location' },
       },
+
+      -- Extensions for specific filetypes to customize lualine behavior
+      extensions = {
+        {
+          -- Disable status line sections for NeoTree and Avante windows
+          sections = {},
+          filetypes = { 'neo-tree', 'AvanteInput', 'AvanteTodos', 'Avante', 'AvanteSelectedFiles' },
+        },
+      },
     },
   },
 

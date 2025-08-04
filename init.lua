@@ -16,9 +16,9 @@ vim.g.have_nerd_font = true
 -- This ensures LSP servers and tools can be found by plugins
 local function ensure_path()
   local paths_to_add = {
-    vim.fn.expand('~/.ghcup/bin'),    -- GHCup Haskell tools
-    vim.fn.expand('~/.cabal/bin'),    -- Cabal-installed tools
-    vim.fn.expand('~/.local/bin'),    -- Local user binaries
+    vim.fn.expand '~/.ghcup/bin', -- GHCup Haskell tools
+    vim.fn.expand '~/.cabal/bin', -- Cabal-installed tools
+    vim.fn.expand '~/.local/bin', -- Local user binaries
   }
 
   local current_path = vim.env.PATH or ''
@@ -28,7 +28,6 @@ local function ensure_path()
       -- Force add path even if it might already exist (better safe than sorry)
       if not current_path:find(path, 1, true) then
         vim.env.PATH = path .. ':' .. current_path
-        vim.notify('Added to PATH: ' .. path, vim.log.levels.INFO)
       end
     else
       vim.notify('Directory not found: ' .. path, vim.log.levels.WARN)
@@ -48,7 +47,7 @@ vim.api.nvim_create_autocmd('FileType', {
 
 -- [[ Set API Keys Early ]]
 -- Load Anthropic API key for AI features (needs to be early for plugins like Avante)
-local config_path = vim.fn.stdpath('config')
+local config_path = vim.fn.stdpath 'config'
 local api_key_file = config_path .. '/anthropic_key.lua'
 
 local ok, api_key = pcall(function()
@@ -61,6 +60,9 @@ vim.env.AVANTE_ANTHROPIC_API_KEY = api_key
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
+
+-- Enable syntax highlighting (required for concealing and many other features)
+vim.cmd.syntax('enable')
 
 -- Make line numbers default
 vim.o.number = false

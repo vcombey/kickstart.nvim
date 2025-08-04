@@ -1,16 +1,21 @@
 -- Haskell development environment and tools
 return {
-  { -- Unicode symbol concealing for Haskell (as specifically requested)
+  { -- Unicode symbol concealing for Haskell (Enhanced version with more features)
     -- Replaces Haskell operators with Unicode symbols for better readability
     -- Examples: -> becomes →, <= becomes ≤, forall becomes ∀, :: becomes ∷
     -- This makes Haskell code more mathematical and easier to read
-    'Twinside/vim-haskellConceal',
+    'enomsg/vim-haskellConcealPlus',
 
     -- Only load for Haskell files to avoid affecting other languages
     ft = 'haskell',
 
     -- Configuration to automatically enable concealing for Haskell files
     config = function()
+      -- Configure vim-haskellConcealPlus options
+      -- Available options: 'q' '℘' '𝐒' '𝐓' '𝐄' '𝐌' 'A' 's' '*' 'x' 'E' 'e' '⇒' '⇔' 'r' 'b' 'f' 'c' 'h' 'C' 'l' '↱' 'w' '-' 'I' 'i' 'R' 'T' 't' 'B' 'Q' 'Z' 'N' 'D' 'C' '1' 'a'
+      -- For full documentation see: https://github.com/enomsg/vim-haskellConcealPlus
+      vim.g.hscoptions = "" -- Use default settings, or customize as needed
+
       -- Set up autocommand to enable concealing when opening Haskell files
       vim.api.nvim_create_autocmd('FileType', {
         pattern = 'haskell',
@@ -18,11 +23,18 @@ return {
           -- Enable concealing (level 2 shows concealed text with replacement)
           vim.opt_local.conceallevel = 2
 
-          -- Set conceal cursor to not show concealed text when cursor is on the line
-          -- 'n' = normal mode, 'i' = insert mode, 'c' = command mode, 'v' = visual mode
+          -- Set conceal cursor behavior
+          -- 'n' = normal mode, 'c' = command mode
+          -- Note: 'i' and 'v' removed to avoid navigation issues
           vim.opt_local.concealcursor = 'nc'
 
-          -- Notify that concealing is enabled
+          -- Ensure traditional syntax highlighting is enabled for this buffer
+          vim.cmd('syntax enable')
+
+          -- Set syntax highlighting explicitly for better compatibility
+          vim.bo.syntax = 'haskell'
+
+          vim.notify('Haskell concealing enabled', vim.log.levels.INFO)
         end,
       })
 
@@ -46,15 +58,6 @@ return {
       })
     end,
 
-    -- Note: Concealing transforms operators for display only - your actual code remains unchanged
-    -- Common transformations:
-    -- -> becomes →    (right arrow)
-    -- <- becomes ←    (left arrow)
-    -- => becomes ⇒    (double right arrow)
-    -- :: becomes ∷    (proportion)
-    -- forall becomes ∀ (for all quantifier)
-    -- lambda becomes λ (lambda symbol)
-    -- You can toggle with <leader>tc or :set conceallevel=0/2
   },
 
   { -- Enhanced Haskell syntax highlighting and indentation
@@ -88,6 +91,17 @@ return {
 
       -- Backpack module system support
       vim.g.haskell_backpack = 1
+
+      -- Enhanced syntax highlighting features
+      vim.g.haskell_classic_highlighting = 1  -- Better classic syntax
+      vim.g.haskell_indent_if = 3             -- Better if/then/else indentation
+      vim.g.haskell_indent_case = 2           -- Better case expression indentation
+      vim.g.haskell_indent_let = 4            -- Better let/in indentation
+      vim.g.haskell_indent_where = 6          -- Better where clause indentation
+      vim.g.haskell_indent_before_where = 2   -- Space before where
+      vim.g.haskell_indent_after_bare_where = 2 -- Space after bare where
+      vim.g.haskell_indent_do = 3             -- Better do notation indentation
+      vim.g.haskell_indent_guard = 2          -- Better guard indentation
     end,
   },
 
@@ -138,10 +152,10 @@ return {
               refineImports = { enabled = true },
               retrie = { enabled = true },
 
-              -- Formatting
-              -- ormolu = { enabled = true },
-              -- fourmolu = { enabled = true },
-              stylishHaskell = { enabled = true }, -- Disable if using ormolu/fourmolu
+              -- Formatting - ONLY stylish-haskell enabled
+              ormolu = { enabled = true },
+              fourmolu = { enabled = true },
+              stylishHaskell = { enabled = true },
 
               -- Evaluation
               eval = { enabled = true },

@@ -50,18 +50,26 @@ return {
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
-			vimgrep_arguments = {
-				"rg",
-				"--color=never",
-				"--no-heading",
-				"--with-filename",
-				"--line-number",
-				"--column",
-				"--smart-case",
-				"--hidden",           -- include dotfiles if needed
-				"--glob", "!**/.git/*"  -- filter anything if needed
-			},
-		},
+          vimgrep_arguments = {
+            'rg',
+            '--color=never',
+            '--no-heading',
+            '--with-filename',
+            '--line-number',
+            '--column',
+            '--smart-case',
+            '--hidden', -- include dotfiles
+            '--no-ignore', -- include git-ignored files
+            '--glob',
+            '!**/.git/*', -- still exclude .git directory
+          },
+          -- Additional configuration to show hidden files
+          file_ignore_patterns = {
+            '%.git/',
+            'node_modules/',
+            '%.DS_Store',
+          },
+        },
         --   mappings = {
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
@@ -265,7 +273,7 @@ return {
       -- These provide quick access to common actions without going through the command palette
 
       -- Quick Open (Ctrl+P / Cmd+P equivalent)
-      vim.keymap.set('n', '<C-p>', builtin.find_files, { desc = '📁 Quick Open Files' })
+      vim.keymap.set('n', '<D-p>', builtin.find_files, { desc = '📁 Quick Open Files' })
 
       -- Search everywhere (Ctrl+Shift+F / Cmd+Shift+F equivalent)
       vim.keymap.set('n', '<C-S-F>', builtin.live_grep, { desc = '🔍 Search Everywhere' })
@@ -273,7 +281,7 @@ return {
       -- Go to symbol in workspace (Ctrl+T / Cmd+T equivalent)
       vim.keymap.set('n', '<C-t>', function()
         -- Try workspace symbols first, fall back to document symbols
-        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        local clients = vim.lsp.get_clients { bufnr = 0 }
         if #clients > 0 then
           builtin.lsp_workspace_symbols()
         else
@@ -284,7 +292,7 @@ return {
       -- Go to symbol in file (Ctrl+Shift+O / Cmd+Shift+O equivalent)
       vim.keymap.set('n', '<C-S-O>', function()
         -- Try LSP document symbols first, fall back to treesitter
-        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        local clients = vim.lsp.get_clients { bufnr = 0 }
         if #clients > 0 then
           builtin.lsp_document_symbols()
         else
@@ -356,6 +364,7 @@ return {
         { '<leader>x', group = 'E[x]it/Close' }, -- Close operations
         { '<leader>v', group = '[V]ertical Split' }, -- Window splitting
         { '<leader>a', group = '🤖 AI Assistant (Cursor-style)' }, -- Clean AI assistance like Cursor
+        { '<D-;>', desc = '⚡ Quick AI Chat' }, -- Quick AI access like Cursor
         { '<C-;>', desc = '⚡ Quick AI Chat' }, -- Quick AI access like Cursor
         { '<leader>P', desc = '🎯 Enhanced Command Palette' }, -- Enhanced command palette
         { '<C-S-P>', desc = '📁 Quick Project Switcher' }, -- Project switcher like VSCode
