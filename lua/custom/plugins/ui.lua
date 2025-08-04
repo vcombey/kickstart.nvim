@@ -59,7 +59,7 @@ return {
         {
           -- Disable status line sections for NeoTree and Avante windows
           sections = {},
-          filetypes = { 'neo-tree', 'AvanteInput', 'AvanteTodos', 'Avante', 'AvanteSelectedFiles' },
+          filetypes = { 'neo-tree', 'AvanteInput', 'AvanteTodos', 'Avante', 'AvanteSelectedFiles', 'toggleterm' },
         },
       },
     },

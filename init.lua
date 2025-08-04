@@ -164,6 +164,12 @@ vim.o.swapfile = false
 -- See `:help 'termguicolors'`
 vim.o.termguicolors = true
 
+-- guicursor configures cursor appearance and behavior
+-- Setting blinkon to 0 disables cursor blinking in all modes
+-- This provides a steady, non-distracting cursor in terminal mode
+-- See `:help 'guicursor'`
+vim.o.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,a:blinkon0'
+
 -- writebackup creates a backup before overwriting a file, then deletes it
 -- We disable this for cleaner file management (version control handles this)
 -- See `:help 'writebackup'`
@@ -324,6 +330,16 @@ vim.keymap.set('n', '<C-a>', 'ggVG', { desc = 'Select all' })
 -- "_d deletes to the "black hole" register (doesn't affect clipboard)
 -- P pastes before the cursor
 vim.keymap.set('x', 'p', '"_dP', { desc = 'Paste without replacing clipboard' })
+
+-- Cmd+V paste functionality (macOS style)
+-- Works in normal, insert, visual, and terminal modes
+-- Uses the system clipboard register (+) for consistent pasting
+vim.keymap.set({ 'n', 'i', 'v' }, '<D-v>', '"+p', { desc = 'Paste from clipboard (Cmd+V)' })
+vim.keymap.set('t', '<D-v>', '<C-\\><C-n>"+pi', { desc = 'Paste from clipboard in terminal (Cmd+V)' })
+
+-- Cmd+C copy functionality (macOS style)
+-- Copies to system clipboard register (+)
+vim.keymap.set({ 'v' }, '<D-c>', '"+y', { desc = 'Copy to clipboard (Cmd+C)' })
 
 -- [[ LSP and Tool Management ]]
 -- Quick access to development tools and language server information
