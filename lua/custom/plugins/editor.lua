@@ -255,4 +255,46 @@ return {
       },
     },
   },
+
+  -- [[ Search and Replace Plugin ]]
+  -- nvim-spectre provides powerful search and replace functionality across files
+  {
+    'nvim-pack/nvim-spectre',
+    build = false,
+    cmd = 'Spectre',
+    opts = { open_cmd = 'noswapfile vnew' },
+    keys = {
+      -- Search in all files under project root (Cmd+Shift+F)
+      {
+        '<D-S-f>',
+        function()
+          -- Find project root similar to telescope approach
+          local root_patterns = { ".git", "package.json", "Cargo.toml", "pyproject.toml", "go.mod", "*.cabal", "stack.yaml" }
+          local project_root = vim.fs.dirname(vim.fs.find(root_patterns, { upward = true })[1]) or vim.fn.getcwd()
+
+          require('spectre').open({
+            search_text = vim.fn.expand("<cword>"), -- Start with word under cursor
+            path = project_root,
+          })
+        end,
+        desc = "🔍 Search & Replace in Project (Cmd+Shift+F)"
+      },
+
+      -- Search in current file only (Cmd+F)
+      {
+        '<D-f>',
+        function()
+          require('spectre').open_file_search({
+            select_word = true, -- Start with word under cursor
+          })
+        end,
+        desc = "🔍 Search & Replace in File (Cmd+F)"
+      },
+
+      -- Additional useful keymaps
+      { '<leader>S', function() require('spectre').toggle() end, desc = "Toggle Spectre" },
+      { '<leader>sw', function() require('spectre').open_visual({select_word=true}) end, desc = "Search current word" },
+      { '<leader>sw', function() require('spectre').open_visual() end, mode = 'v', desc = "Search current word" },
+    },
+  },
 }

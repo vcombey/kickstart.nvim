@@ -49,7 +49,19 @@ return {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
+        defaults = {
+			vimgrep_arguments = {
+				"rg",
+				"--color=never",
+				"--no-heading",
+				"--with-filename",
+				"--line-number",
+				"--column",
+				"--smart-case",
+				"--hidden",           -- include dotfiles if needed
+				"--glob", "!**/.git/*"  -- filter anything if needed
+			},
+		},
         --   mappings = {
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
@@ -261,7 +273,7 @@ return {
       -- Go to symbol in workspace (Ctrl+T / Cmd+T equivalent)
       vim.keymap.set('n', '<C-t>', function()
         -- Try workspace symbols first, fall back to document symbols
-        local clients = vim.lsp.get_clients()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
         if #clients > 0 then
           builtin.lsp_workspace_symbols()
         else
@@ -272,7 +284,7 @@ return {
       -- Go to symbol in file (Ctrl+Shift+O / Cmd+Shift+O equivalent)
       vim.keymap.set('n', '<C-S-O>', function()
         -- Try LSP document symbols first, fall back to treesitter
-        local clients = vim.lsp.get_clients()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
         if #clients > 0 then
           builtin.lsp_document_symbols()
         else
@@ -299,7 +311,7 @@ return {
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
         builtin.live_grep {
-          grep_open_files = true,
+          grep_open_files = false,
           prompt_title = 'Live Grep in Open Files',
         }
       end, { desc = '[S]earch [/] in Open Files' })

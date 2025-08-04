@@ -124,7 +124,7 @@ return {
         vim.keymap.set('n', '<leader>aa', '<cmd>AvanteToggle<cr>', vim.tbl_extend('force', opts, { desc = '🤖 AI Chat (Cursor-style)' }))
 
         -- Quick AI access from any mode (like Cursor's quick AI)
-        vim.keymap.set({ 'n', 'v', 'i' }, '<C-;>', '<cmd>AvanteAsk<cr>', vim.tbl_extend('force', opts, { desc = '⚡ Quick AI Chat' }))
+        vim.keymap.set({ 'n', 'v', 'i' }, '<D-;>', '<cmd>AvanteAsk<cr>', vim.tbl_extend('force', opts, { desc = '⚡ Quick AI Chat' }))
 
         -- AI code editing (like Cursor's inline AI)
         vim.keymap.set({ 'n', 'v' }, '<leader>ae', '<cmd>AvanteEdit<cr>', vim.tbl_extend('force', opts, { desc = '✨ AI Edit Code' }))

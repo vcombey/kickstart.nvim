@@ -34,9 +34,6 @@ local function ensure_path()
       vim.notify('Directory not found: ' .. path, vim.log.levels.WARN)
     end
   end
-
-  -- Debug: Show final PATH
-  vim.notify('Final PATH includes GHCup: ' .. tostring(vim.env.PATH:find('.ghcup/bin')), vim.log.levels.INFO)
 end
 
 -- Call this early and also set up an autocmd as backup
