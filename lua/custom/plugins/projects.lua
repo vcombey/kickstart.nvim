@@ -24,7 +24,11 @@ return {
           'pyproject.toml',
           'pom.xml',
           '.project',
-          '.pro'
+          '.pro',
+          -- Haskell project patterns
+          'stack.yaml',
+          'cabal.project',
+          '*.cabal'
         },
 
         -- Table of lsp clients to ignore by name

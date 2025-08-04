@@ -11,6 +11,44 @@ vim.g.maplocalleader = ' '
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = true
 
+-- [[ Ensure PATH includes development tools ]]
+-- Add GHCup and other development tool paths to Neovim's PATH
+-- This ensures LSP servers and tools can be found by plugins
+local function ensure_path()
+  local paths_to_add = {
+    vim.fn.expand('~/.ghcup/bin'),    -- GHCup Haskell tools
+    vim.fn.expand('~/.cabal/bin'),    -- Cabal-installed tools
+    vim.fn.expand('~/.local/bin'),    -- Local user binaries
+  }
+
+  local current_path = vim.env.PATH or ''
+
+  for _, path in ipairs(paths_to_add) do
+    if vim.fn.isdirectory(path) == 1 then
+      -- Force add path even if it might already exist (better safe than sorry)
+      if not current_path:find(path, 1, true) then
+        vim.env.PATH = path .. ':' .. current_path
+        vim.notify('Added to PATH: ' .. path, vim.log.levels.INFO)
+      end
+    else
+      vim.notify('Directory not found: ' .. path, vim.log.levels.WARN)
+    end
+  end
+
+  -- Debug: Show final PATH
+  vim.notify('Final PATH includes GHCup: ' .. tostring(vim.env.PATH:find('.ghcup/bin')), vim.log.levels.INFO)
+end
+
+-- Call this early and also set up an autocmd as backup
+ensure_path()
+
+-- Backup: Ensure PATH is set when entering Haskell files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'haskell',
+  callback = ensure_path,
+  once = false, -- Run every time, just to be sure
+})
+
 -- [[ Set API Keys Early ]]
 -- Load Anthropic API key for AI features (needs to be early for plugins like Avante)
 local config_path = vim.fn.stdpath('config')
@@ -229,6 +267,10 @@ vim.keymap.set('n', '<S-Tab>', ':bprevious<CR>', { desc = 'Previous buffer' })
 -- Removes the file from memory but keeps the window open
 -- See `:help :bdelete` for differences between bdelete, bwipeout, etc.
 vim.keymap.set('n', '<leader>bd', ':bdelete<CR>', { desc = 'Delete buffer' })
+
+-- Close buffer with Cmd+W (macOS style)
+-- Works in normal, insert, and visual modes for convenience
+vim.keymap.set({ 'n', 'i', 'v' }, '<D-w>', '<cmd>bdelete<CR>', { desc = 'Close buffer (Cmd+W)' })
 
 -- [[ Enhanced Text Editing ]]
 -- These keymaps improve the text editing experience by maintaining

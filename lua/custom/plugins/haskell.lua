@@ -201,21 +201,62 @@ return {
           local bufnr = event.buf
           local opts = { noremap = true, silent = true, buffer = bufnr }
 
-          -- Check for Stack or Cabal configuration files to determine project type
-          local cwd = vim.fn.getcwd()
+          -- Enhanced project detection with better debugging
+          local function find_project_root(path)
+            path = path or vim.fn.expand('%:p:h') -- Start from current file's directory
 
-          -- Look for stack.yaml (Stack project)
-          if vim.fn.filereadable(cwd .. '/stack.yaml') == 1 then
-            vim.notify('Detected Stack project - using Stack resolver GHC version', vim.log.levels.INFO)
-            -- Stack automatically handles GHC versions based on the resolver
+            -- Walk up the directory tree looking for project files
+            while path ~= '/' and path ~= '' do
+              -- Check for Stack project
+              if vim.fn.filereadable(path .. '/stack.yaml') == 1 then
+                return path, 'stack'
+              end
 
-            -- Look for cabal.project or *.cabal files (Cabal project)
-          elseif vim.fn.filereadable(cwd .. '/cabal.project') == 1 or #vim.fn.glob(cwd .. '/*.cabal', false, true) > 0 then
-            vim.notify('Detected Cabal project - using project GHC version', vim.log.levels.INFO)
-            -- Cabal projects should use GHCup to manage GHC versions
+              -- Check for Cabal project
+              if vim.fn.filereadable(path .. '/cabal.project') == 1 then
+                return path, 'cabal'
+              end
+
+              -- Check for .cabal files
+              local cabal_files = vim.fn.glob(path .. '/*.cabal', false, true)
+              if #cabal_files > 0 then
+                return path, 'cabal'
+              end
+
+              -- Move up one directory
+              path = vim.fn.fnamemodify(path, ':h')
+            end
+
+            return nil, 'standalone'
+          end
+
+          local project_root, project_type = find_project_root()
+
+          if project_type == 'stack' then
+            vim.notify('✓ Detected Stack project at: ' .. project_root, vim.log.levels.INFO)
+            -- Change working directory to project root if needed
+            if vim.fn.getcwd() ~= project_root then
+              vim.cmd('cd ' .. project_root)
+              vim.notify('Changed working directory to: ' .. project_root, vim.log.levels.INFO)
+            end
+          elseif project_type == 'cabal' then
+            vim.notify('✓ Detected Cabal project at: ' .. project_root, vim.log.levels.INFO)
+            -- Change working directory to project root if needed
+            if vim.fn.getcwd() ~= project_root then
+              vim.cmd('cd ' .. project_root)
+              vim.notify('Changed working directory to: ' .. project_root, vim.log.levels.INFO)
+            end
           else
-            -- Standalone Haskell file
-            vim.notify('Standalone Haskell file - using system GHC', vim.log.levels.INFO)
+            -- Enhanced standalone detection with more info
+            local cwd = vim.fn.getcwd()
+            local file_dir = vim.fn.expand('%:p:h')
+            vim.notify(
+              '⚠ Standalone Haskell file detected\n' ..
+              'Current working dir: ' .. cwd .. '\n' ..
+              'File directory: ' .. file_dir .. '\n' ..
+              'No stack.yaml or cabal.project found',
+              vim.log.levels.WARN
+            )
           end
 
           -- NOTE: haskell-language-server (HLS) relies heavily on code lenses
@@ -289,7 +330,6 @@ return {
           'cabal', -- Cabal build tool
           'stack', -- Stack build tool (optional)
           'haskell-language-server', -- Language server
-          'ormolu', -- Code formatter
           'hlint', -- Linter
         }
 
