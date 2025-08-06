@@ -62,7 +62,7 @@ vim.env.AVANTE_ANTHROPIC_API_KEY = api_key
 --  For more options, you can see `:help option-list`
 
 -- Enable syntax highlighting (required for concealing and many other features)
-vim.cmd.syntax('enable')
+vim.cmd.syntax 'enable'
 
 -- Make line numbers default
 vim.o.number = false
@@ -341,6 +341,7 @@ vim.keymap.set('t', '<D-v>', '<C-\\><C-n>"+pi', { desc = 'Paste from clipboard i
 -- Copies to system clipboard register (+)
 vim.keymap.set({ 'v' }, '<D-c>', '"+y', { desc = 'Copy to clipboard (Cmd+C)' })
 
+
 -- [[ LSP and Tool Management ]]
 -- Quick access to development tools and language server information
 
@@ -362,9 +363,8 @@ vim.keymap.set('n', '<leader>cm', '<cmd>Mason<cr>', { desc = 'Mason' })
 -- Lazy is our plugin manager - use this to install, update, or remove plugins
 -- See `:help lazy.nvim` for more information
 vim.keymap.set('n', '<leader>l', '<cmd>Lazy<cr>', { desc = 'Lazy' })
-vim.keymap.set('n', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
-vim.keymap.set('i', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
-vim.keymap.set('t', '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
+vim.keymap.set({ 'n', 'i', 't' }, '<C-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
+vim.keymap.set({ 'n', 'i', 't' }, '<D-j>', '<cmd>ToggleTerm direction=horizontal<cr>', { desc = 'Lazy' })
 
 -- [[ Neovide Configuration ]]
 -- Check if running in Neovide and apply specific settings
