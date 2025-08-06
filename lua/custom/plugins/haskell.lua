@@ -14,7 +14,7 @@ return {
       -- Configure vim-haskellConcealPlus options
       -- Available options: 'q' '℘' '𝐒' '𝐓' '𝐄' '𝐌' 'A' 's' '*' 'x' 'E' 'e' '⇒' '⇔' 'r' 'b' 'f' 'c' 'h' 'C' 'l' '↱' 'w' '-' 'I' 'i' 'R' 'T' 't' 'B' 'Q' 'Z' 'N' 'D' 'C' '1' 'a'
       -- For full documentation see: https://github.com/enomsg/vim-haskellConcealPlus
-      vim.g.hscoptions = "" -- Use default settings, or customize as needed
+      vim.g.hscoptions = '' -- Use default settings, or customize as needed
 
       -- Set up autocommand to enable concealing when opening Haskell files
       vim.api.nvim_create_autocmd('FileType', {
@@ -29,12 +29,10 @@ return {
           vim.opt_local.concealcursor = 'nc'
 
           -- Ensure traditional syntax highlighting is enabled for this buffer
-          vim.cmd('syntax enable')
+          vim.cmd 'syntax enable'
 
           -- Set syntax highlighting explicitly for better compatibility
           vim.bo.syntax = 'haskell'
-
-          vim.notify('Haskell concealing enabled', vim.log.levels.INFO)
         end,
       })
 
@@ -48,16 +46,13 @@ return {
           vim.keymap.set('n', '<leader>tc', function()
             if vim.o.conceallevel == 0 then
               vim.opt_local.conceallevel = 2
-              vim.notify('Haskell concealing enabled', vim.log.levels.INFO)
             else
               vim.opt_local.conceallevel = 0
-              vim.notify('Haskell concealing disabled', vim.log.levels.INFO)
             end
           end, vim.tbl_extend('force', opts, { desc = 'Toggle Haskell concealing' }))
         end,
       })
     end,
-
   },
 
   { -- Enhanced Haskell syntax highlighting and indentation
@@ -93,15 +88,15 @@ return {
       vim.g.haskell_backpack = 1
 
       -- Enhanced syntax highlighting features
-      vim.g.haskell_classic_highlighting = 1  -- Better classic syntax
-      vim.g.haskell_indent_if = 3             -- Better if/then/else indentation
-      vim.g.haskell_indent_case = 2           -- Better case expression indentation
-      vim.g.haskell_indent_let = 4            -- Better let/in indentation
-      vim.g.haskell_indent_where = 6          -- Better where clause indentation
-      vim.g.haskell_indent_before_where = 2   -- Space before where
+      vim.g.haskell_classic_highlighting = 1 -- Better classic syntax
+      vim.g.haskell_indent_if = 3 -- Better if/then/else indentation
+      vim.g.haskell_indent_case = 2 -- Better case expression indentation
+      vim.g.haskell_indent_let = 4 -- Better let/in indentation
+      vim.g.haskell_indent_where = 6 -- Better where clause indentation
+      vim.g.haskell_indent_before_where = 2 -- Space before where
       vim.g.haskell_indent_after_bare_where = 2 -- Space after bare where
-      vim.g.haskell_indent_do = 3             -- Better do notation indentation
-      vim.g.haskell_indent_guard = 2          -- Better guard indentation
+      vim.g.haskell_indent_do = 3 -- Better do notation indentation
+      vim.g.haskell_indent_guard = 2 -- Better guard indentation
     end,
   },
 
@@ -217,7 +212,7 @@ return {
 
           -- Enhanced project detection with better debugging
           local function find_project_root(path)
-            path = path or vim.fn.expand('%:p:h') -- Start from current file's directory
+            path = path or vim.fn.expand '%:p:h' -- Start from current file's directory
 
             -- Walk up the directory tree looking for project files
             while path ~= '/' and path ~= '' do
@@ -247,28 +242,28 @@ return {
           local project_root, project_type = find_project_root()
 
           if project_type == 'stack' then
-            vim.notify('✓ Detected Stack project at: ' .. project_root, vim.log.levels.INFO)
             -- Change working directory to project root if needed
             if vim.fn.getcwd() ~= project_root then
               vim.cmd('cd ' .. project_root)
-              vim.notify('Changed working directory to: ' .. project_root, vim.log.levels.INFO)
             end
           elseif project_type == 'cabal' then
-            vim.notify('✓ Detected Cabal project at: ' .. project_root, vim.log.levels.INFO)
             -- Change working directory to project root if needed
             if vim.fn.getcwd() ~= project_root then
               vim.cmd('cd ' .. project_root)
-              vim.notify('Changed working directory to: ' .. project_root, vim.log.levels.INFO)
             end
           else
             -- Enhanced standalone detection with more info
             local cwd = vim.fn.getcwd()
-            local file_dir = vim.fn.expand('%:p:h')
+            local file_dir = vim.fn.expand '%:p:h'
             vim.notify(
-              '⚠ Standalone Haskell file detected\n' ..
-              'Current working dir: ' .. cwd .. '\n' ..
-              'File directory: ' .. file_dir .. '\n' ..
-              'No stack.yaml or cabal.project found',
+              '⚠ Standalone Haskell file detected\n'
+                .. 'Current working dir: '
+                .. cwd
+                .. '\n'
+                .. 'File directory: '
+                .. file_dir
+                .. '\n'
+                .. 'No stack.yaml or cabal.project found',
               vim.log.levels.WARN
             )
           end
@@ -363,3 +358,4 @@ return {
     end,
   },
 }
+
