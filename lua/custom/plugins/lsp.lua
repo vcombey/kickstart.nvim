@@ -376,28 +376,25 @@ return {
     --- @type blink.cmp.Config
     opts = {
       keymap = {
-        -- 'default' (recommended) for mappings similar to built-in completions
-        --   <c-y> to accept ([y]es) the completion.
-        --    This will auto-import if your LSP supports it.
-        --    This will expand snippets if the LSP sent a snippet.
-        -- 'super-tab' for tab to accept
-        -- 'enter' for enter to accept
-        -- 'none' for no mappings
-        --
-        -- For an understanding of why the 'default' preset is recommended,
-        -- you will need to read `:help ins-completion`
-        --
-        -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        --
-        -- All presets have the following mappings:
-        -- <tab>/<s-tab>: move to right/left of your snippet expansion
-        -- <c-space>: Open menu or open docs if already open
-        -- <c-n>/<c-p> or <up>/<down>: Select next/previous item
-        -- <c-e>: Hide menu
-        -- <c-k>: Toggle signature help
-        --
-        -- See :h blink-cmp-config-keymap for defining your own keymap
-        preset = 'default',
+        -- Custom keymap configuration for better UX
+        -- Accept completion with Enter and navigate with Tab
+        preset = 'none', -- Start with no preset to fully customize
+
+        ['<CR>'] = { 'accept', 'fallback' }, -- Accept with Enter
+        ['<Tab>'] = { 'select_next', 'fallback' }, -- Navigate down with Tab
+        ['<S-Tab>'] = { 'select_prev', 'fallback' }, -- Navigate up with Shift+Tab
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' }, -- Show/toggle menu
+        ['<C-e>'] = { 'hide', 'fallback' }, -- Hide menu
+        ['<C-y>'] = { 'accept', 'fallback' }, -- Keep original accept key as backup
+        ['<Up>'] = { 'select_prev', 'fallback' }, -- Arrow key navigation
+        ['<Down>'] = { 'select_next', 'fallback' }, -- Arrow key navigation
+        ['<C-p>'] = { 'select_prev', 'fallback' }, -- Keep original prev
+        ['<C-n>'] = { 'select_next', 'fallback' }, -- Keep original next
+        ['<C-k>'] = { 'show_documentation', 'hide_documentation' }, -- Toggle docs
+
+        -- Snippet navigation (when in snippet mode)
+        ['<C-l>'] = { 'snippet_forward', 'fallback' },
+        ['<C-h>'] = { 'snippet_backward', 'fallback' },
 
         -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
         --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
