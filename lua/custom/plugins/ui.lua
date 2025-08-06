@@ -425,6 +425,7 @@ return {
       end,
       render = 'default',
       stages = 'fade_in_slide_out',
+      background_colour = '#000000', -- Set background color to fix transparency warning
     },
     config = function(_, opts)
       require('notify').setup(opts)
