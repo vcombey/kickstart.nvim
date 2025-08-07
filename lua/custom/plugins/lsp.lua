@@ -273,8 +273,7 @@ return {
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         -- Haskell tools (haskell-language-server is installed via haskell-tools.nvim)
-        -- 'fourmolu', -- Haskell formatter
-        -- 'ormolu', -- Alternative Haskell formatter
+        'ormolu', -- Haskell formatter (our primary choice)
         'hlint', -- Haskell linter
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
@@ -329,7 +328,7 @@ return {
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Haskell formatters
-        haskell = { 'stylish-haskell', stop_after_first = true },
+        haskell = { 'ormolu', stop_after_first = true },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
