@@ -53,8 +53,13 @@ return {
         support_paste_from_clipboard = false, -- Fix clipboard issues
       },
 
-      -- Let avante use default mappings to avoid nil errors
-      -- We'll override the submit key in a safer way
+      -- Custom mappings for better UX
+      mappings = {
+        submit = {
+          normal = '<CR>', -- Use Enter to submit in normal mode
+          insert = '<CR>', -- Use Enter to submit in insert mode
+        },
+      },
 
       -- Disable ALL UI clutter completely
       hints = { enabled = false },
@@ -62,12 +67,14 @@ return {
       input_hints = { enabled = false },
       show_input_hint = false, -- Disable the function causing the error
 
-      -- Hide token counts and progress
+      -- Hide token counts and progress - completely clean UI
       ui = {
         show_tokens = false, -- No token indication
         show_model = false, -- No model name showing
         show_datetime = false, -- No datetime
         show_progress = false, -- No progress indicators
+        show_status = false, -- No status messages
+        show_usage = false, -- No usage information
       },
 
       -- Clean sidebar without footer/header
@@ -75,6 +82,15 @@ return {
         header = { enabled = false }, -- No header
         footer = { enabled = false }, -- No footer
         title = '', -- No title
+        show_tokens = false, -- Ensure no tokens in sidebar
+        show_usage = false, -- No usage info in sidebar
+      },
+
+      -- Additional UI cleanup
+      display = {
+        show_diff = true, -- Keep diff display (useful)
+        show_usage = false, -- Remove usage display
+        show_model_info = false, -- Remove model information
       },
 
       debug = false,
@@ -136,4 +152,3 @@ return {
     build = vim.fn.has 'win32' ~= 0 and 'powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false' or 'make',
   },
 }
-
