@@ -415,7 +415,7 @@ vim.keymap.set('x', 'p', '"_dP', { desc = 'Paste without replacing clipboard' })
 -- Cmd+V paste functionality (macOS style)
 -- Works in normal, insert, visual, and terminal modes
 -- Uses the system clipboard register (+) for consistent pasting
-vim.keymap.set({ 'n', 'i', 'v' }, '<D-v>', '"+p', { desc = 'Paste from clipboard (Cmd+V)' })
+vim.keymap.set({ 'n', 'i', 'v' }, '<D-v>', '<esc>"+p', { desc = 'Paste from clipboard (Cmd+V)' })
 vim.keymap.set('t', '<D-v>', '<C-\\><C-n>"+pi', { desc = 'Paste from clipboard in terminal (Cmd+V)' })
 
 -- Cmd+C copy functionality (macOS style)
