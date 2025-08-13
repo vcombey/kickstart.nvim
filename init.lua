@@ -16,33 +16,114 @@ vim.g.have_nerd_font = true
 -- This ensures LSP servers and tools can be found by plugins
 local function ensure_path()
   local paths_to_add = {
-    vim.fn.expand '~/.ghcup/bin', -- GHCup Haskell tools
+    vim.fn.expand '~/.ghcup/bin', -- GHCup Haskell tools (MUST be first!)
     vim.fn.expand '~/.cabal/bin', -- Cabal-installed tools
     vim.fn.expand '~/.local/bin', -- Local user binaries
+    '/usr/local/bin', -- Homebrew tools on macOS
+    '/opt/homebrew/bin', -- Homebrew tools on Apple Silicon
   }
 
   local current_path = vim.env.PATH or ''
 
+  -- CRITICAL: First, try to get full environment from shell including ghcup settings
+  local shell = vim.env.SHELL or '/bin/zsh'
+
+  -- Source the shell profile to get ghcup environment
+  local shell_commands = {
+    shell .. ' -l -c "echo $PATH"', -- Login shell to source profiles
+    shell .. ' -c "source ~/.ghcup/env && echo $PATH"', -- Explicit ghcup sourcing
+  }
+
+  local shell_path = nil
+  for _, cmd in ipairs(shell_commands) do
+    local success, shell_output = pcall(function()
+      return vim.fn.system(cmd):gsub('\n', '')
+    end)
+
+    if success and shell_output and shell_output ~= '' and shell_output:find('ghcup') then
+      shell_path = shell_output
+      vim.env.PATH = shell_path
+      current_path = shell_path
+      -- vim.notify('✓ Inherited ghcup PATH from: ' .. cmd, vim.log.levels.DEBUG)
+      break
+    end
+  end
+
+  -- Ensure our specific paths are included (ghcup first for priority)
   for _, path in ipairs(paths_to_add) do
     if vim.fn.isdirectory(path) == 1 then
-      -- Force add path even if it might already exist (better safe than sorry)
-      if not current_path:find(path, 1, true) then
-        vim.env.PATH = path .. ':' .. current_path
+      -- Force add path at the beginning if it's ghcup, otherwise at the end
+      if path:find('ghcup') then
+        if not current_path:find(path, 1, true) then
+          vim.env.PATH = path .. ':' .. current_path
+          current_path = vim.env.PATH
+        end
+      else
+        if not current_path:find(path, 1, true) then
+          vim.env.PATH = current_path .. ':' .. path
+          current_path = vim.env.PATH
+        end
       end
-    else
-      vim.notify('Directory not found: ' .. path, vim.log.levels.WARN)
     end
+  end
+
+  -- Critical: Verify we're using the correct GHC version for HLS compatibility
+  local ghc_version_check = pcall(function()
+    local ghc_output = vim.fn.system('ghc --version'):gsub('\n', '')
+    local version = ghc_output:match('version ([0-9]+%.[0-9]+%.[0-9]+)')
+
+    if version then
+      if version == '9.6.7' then
+        -- vim.notify('✓ Using GHC ' .. version .. ' (compatible with HLS)', vim.log.levels.DEBUG)
+      elseif version == '9.10.2' then
+        vim.notify('⚠ Warning: Using GHC ' .. version .. ' but HLS was compiled with 9.6.7\n' ..
+                   'Run: ghcup set ghc 9.6.7', vim.log.levels.WARN)
+      else
+        vim.notify('ℹ Using GHC ' .. version, vim.log.levels.INFO)
+      end
+    end
+  end)
+
+  -- Debug: verify important tools are available after PATH setup
+  local important_tools = { 'haskell-language-server', 'ghc', 'cabal', 'ormolu' }
+  local missing_tools = {}
+  for _, tool in ipairs(important_tools) do
+    if vim.fn.executable(tool) == 0 then
+      table.insert(missing_tools, tool)
+    end
+  end
+
+  if #missing_tools > 0 then
+    vim.notify('Missing Haskell tools: ' .. table.concat(missing_tools, ', ') ..
+               '\nConsider installing via: curl --proto "=https" --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh',
+               vim.log.levels.WARN)
   end
 end
 
--- Call this early and also set up an autocmd as backup
+-- Call this early to setup PATH
 ensure_path()
 
--- Backup: Ensure PATH is set when entering Haskell files
+-- Enhanced backup: Ensure PATH is set when entering Haskell files
+-- This is critical for GUI Neovim instances that don't inherit shell environment
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'haskell',
-  callback = ensure_path,
-  once = false, -- Run every time, just to be sure
+  pattern = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+  callback = function()
+    ensure_path()
+    -- Small delay to ensure LSP picks up the new PATH
+    vim.defer_fn(function()
+      -- Force LSP restart if needed
+      if vim.bo.filetype == 'haskell' then
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        if #clients == 0 then
+          vim.notify('Restarting Haskell LSP with updated PATH...', vim.log.levels.INFO)
+          vim.defer_fn(function()
+            vim.cmd('LspRestart')
+          end, 100)
+        end
+      end
+    end, 50)
+  end,
+  group = vim.api.nvim_create_augroup('haskell-path-setup', { clear = true }),
 })
 
 -- [[ Set API Keys Early ]]

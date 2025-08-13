@@ -119,14 +119,23 @@ return {
 
     -- Configuration options for haskell-tools.nvim
     -- This plugin uses opts instead of a setup function
-    opts = {
-      -- HLS (Haskell Language Server) configuration
-      hls = {
-        -- Default settings for HLS - can be overridden per project
-        default_settings = {
-          haskell = {
-            -- Formatting settings
-            formattingProvider = 'stylish-haskell', -- or 'fourmolu', 'stylish-haskell', 'brittany'
+    opts = function()
+      return {
+        -- HLS (Haskell Language Server) configuration
+        hls = {
+          -- Force the correct HLS binary and environment
+          cmd = {
+            'env',
+            'PATH=' .. vim.fn.expand('~/.ghcup/bin') .. ':' .. (vim.env.PATH or ''),
+            vim.fn.expand('~/.ghcup/bin/haskell-language-server'),
+            '--lsp'
+          },
+
+          -- Default settings for HLS - can be overridden per project
+          default_settings = {
+            haskell = {
+            -- Formatting settings - Use ormolu as primary formatter
+            formattingProvider = 'ormolu',
 
             -- Enable/disable various HLS features
             checkProject = true, -- Check the entire project, not just open files
@@ -147,10 +156,10 @@ return {
               refineImports = { enabled = true },
               retrie = { enabled = true },
 
-              -- Formatting - ONLY stylish-haskell enabled
+              -- Formatting - ONLY enable ormolu to avoid conflicts
               ormolu = { enabled = true },
-              fourmolu = { enabled = true },
-              stylishHaskell = { enabled = true },
+              fourmolu = { enabled = false },
+              stylishHaskell = { enabled = false },
 
               -- Evaluation
               eval = { enabled = true },
@@ -196,11 +205,45 @@ return {
         -- Automatically set up debugging for Haskell
         auto_setup = true,
       },
-    },
+    }
+    end,
 
-    -- Enhanced configuration with automatic GHC version detection and toolchain management
+        -- Enhanced configuration with automatic GHC version detection and toolchain management
     -- Note: haskell-tools.nvim automatically configures itself, so we set up keymaps and autocommands
     config = function()
+            -- CRITICAL: Force correct environment for HLS before any initialization
+      -- Set up environment variables that HLS will inherit
+      local ghcup_path = vim.fn.expand('~/.ghcup/bin')
+      local current_path = vim.env.PATH or ''
+
+      -- Ensure ghcup is at the front of PATH
+      if not current_path:find(ghcup_path, 1, true) then
+        vim.env.PATH = ghcup_path .. ':' .. current_path
+      end
+
+      -- Force GHC environment variables
+      vim.env.GHC_VERSION = '9.6.7'
+
+      -- BACKUP: Also configure lspconfig directly in case haskell-tools doesn't use our command
+      local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
+      if lspconfig_ok then
+        lspconfig.hls.setup {
+          cmd = {
+            'env',
+            'PATH=' .. ghcup_path .. ':' .. current_path,
+            ghcup_path .. '/haskell-language-server',
+            '--lsp'
+          },
+          on_attach = function(client, bufnr)
+            -- Only show this message once to verify it's working
+            if not vim.g.hls_correct_version_notified then
+              vim.notify('✓ HLS started with correct GHC environment', vim.log.levels.INFO)
+              vim.g.hls_correct_version_notified = true
+            end
+          end,
+        }
+      end
+
       local ht = require 'haskell-tools'
 
       -- Set up autocommand for Haskell-specific keymaps and project detection
@@ -329,6 +372,67 @@ return {
           vim.keymap.set('n', '<space>hf', function()
             vim.lsp.buf.format { async = true }
           end, opts)
+
+                    -- Diagnostic command to check Haskell environment
+          vim.keymap.set('n', '<space>hd', function()
+            local diagnostics = {}
+
+            -- Check PATH
+            local path_entries = vim.split(vim.env.PATH or '', ':')
+            local ghcup_in_path = false
+            for _, entry in ipairs(path_entries) do
+              if entry:find('ghcup') then
+                ghcup_in_path = true
+                break
+              end
+            end
+            table.insert(diagnostics, 'GHCup in PATH: ' .. (ghcup_in_path and '✓' or '✗'))
+
+            -- Check GHC version
+            local ghc_output = vim.fn.system('ghc --version'):gsub('\n', '')
+            local ghc_version = ghc_output:match('version ([0-9]+%.[0-9]+%.[0-9]+)')
+            local version_status = ghc_version == '9.6.7' and '✓' or '⚠'
+            table.insert(diagnostics, 'GHC Version: ' .. (ghc_version or 'Unknown') .. ' ' .. version_status)
+
+            -- Check HLS binary location
+            local hls_which = vim.fn.system('which haskell-language-server'):gsub('\n', '')
+            table.insert(diagnostics, 'HLS Binary: ' .. hls_which)
+
+            -- Check LSP clients attached
+            local clients = vim.lsp.get_clients({ bufnr = 0 })
+            local hls_clients = {}
+            for _, client in ipairs(clients) do
+              if client.name:find('haskell') or client.name:find('hls') then
+                table.insert(hls_clients, client.name .. ' (pid: ' .. (client.get_process_id and client.get_process_id() or 'unknown') .. ')')
+              end
+            end
+            table.insert(diagnostics, 'LSP Clients: ' .. (next(hls_clients) and table.concat(hls_clients, ', ') or 'None'))
+
+            -- Show results
+            vim.notify(table.concat(diagnostics, '\n'), vim.log.levels.INFO)
+          end, vim.tbl_extend('force', opts, { desc = 'Haskell diagnostics' }))
+
+          -- Force restart HLS with correct environment
+          vim.keymap.set('n', '<space>hr', function()
+            -- Stop all Haskell LSP clients
+            local clients = vim.lsp.get_clients({ bufnr = 0 })
+            for _, client in ipairs(clients) do
+              if client.name:find('haskell') or client.name:find('hls') then
+                client.stop()
+                vim.notify('Stopped ' .. client.name, vim.log.levels.INFO)
+              end
+            end
+
+            -- Force correct PATH
+            local ghcup_path = vim.fn.expand('~/.ghcup/bin')
+            vim.env.PATH = ghcup_path .. ':' .. (vim.env.PATH or '')
+
+            -- Restart LSP after a short delay
+            vim.defer_fn(function()
+              vim.cmd('LspRestart')
+              vim.notify('Restarting HLS with correct GHC environment...', vim.log.levels.INFO)
+            end, 1000)
+          end, vim.tbl_extend('force', opts, { desc = 'Restart HLS with correct environment' }))
         end,
       })
 
