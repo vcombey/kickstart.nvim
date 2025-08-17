@@ -27,12 +27,6 @@ return {
           -- 'n' = normal mode, 'c' = command mode
           -- Note: 'i' and 'v' removed to avoid navigation issues
           vim.opt_local.concealcursor = 'nc'
-
-          -- Ensure traditional syntax highlighting is enabled for this buffer
-          vim.cmd 'syntax enable'
-
-          -- Set syntax highlighting explicitly for better compatibility
-          vim.bo.syntax = 'haskell'
         end,
       })
 
