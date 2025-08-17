@@ -100,31 +100,32 @@ local function ensure_path()
   end
 end
 
--- Call this early to setup PATH
-ensure_path()
+-- Disabled: let project tools (nix/cabal/stack) manage PATH to avoid LSP cradle issues
+-- ensure_path()
 
 -- Enhanced backup: Ensure PATH is set when entering Haskell files
 -- This is critical for GUI Neovim instances that don't inherit shell environment
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
-  callback = function()
-    ensure_path()
-    -- Small delay to ensure LSP picks up the new PATH
-    vim.defer_fn(function()
-      -- Force LSP restart if needed
-      if vim.bo.filetype == 'haskell' then
-        local clients = vim.lsp.get_clients({ bufnr = 0 })
-        if #clients == 0 then
-          vim.notify('Restarting Haskell LSP with updated PATH...', vim.log.levels.INFO)
-          vim.defer_fn(function()
-            vim.cmd('LspRestart')
-          end, 100)
-        end
-      end
-    end, 50)
-  end,
-  group = vim.api.nvim_create_augroup('haskell-path-setup', { clear = true }),
-})
+-- Disabled: avoid modifying PATH on Haskell buffers; rely on project environment
+-- vim.api.nvim_create_autocmd('FileType', {
+--   pattern = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+--   callback = function()
+--     ensure_path()
+--     -- Small delay to ensure LSP picks up the new PATH
+--     vim.defer_fn(function()
+--       -- Force LSP restart if needed
+--       if vim.bo.filetype == 'haskell' then
+--         local clients = vim.lsp.get_clients({ bufnr = 0 })
+--         if #clients == 0 then
+--           vim.notify('Restarting Haskell LSP with updated PATH...', vim.log.levels.INFO)
+--           vim.defer_fn(function()
+--             vim.cmd('LspRestart')
+--           end, 100)
+--         end
+--       end
+--     end, 50)
+--   end,
+--   group = vim.api.nvim_create_augroup('haskell-path-setup', { clear = true }),
+-- })
 
 -- [[ Set API Keys Early ]]
 -- Load Anthropic API key for AI features (needs to be early for plugins like Avante)

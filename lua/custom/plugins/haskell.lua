@@ -117,13 +117,6 @@ return {
       return {
         -- HLS (Haskell Language Server) configuration
         hls = {
-          -- Force the correct HLS binary and environment
-          cmd = {
-            'env',
-            'PATH=' .. vim.fn.expand('~/.ghcup/bin') .. ':' .. (vim.env.PATH or ''),
-            vim.fn.expand('~/.ghcup/bin/haskell-language-server'),
-            '--lsp'
-          },
 
           -- Default settings for HLS - can be overridden per project
           default_settings = {
@@ -144,7 +137,8 @@ return {
 
               -- Import management
               importLens = { enabled = true },
-              moduleName = { enabled = true },
+              -- Disable moduleName lens which often fails when cradle/env is off
+              moduleName = { enabled = false },
 
               -- Code actions
               refineImports = { enabled = true },
@@ -215,30 +209,22 @@ return {
         vim.env.PATH = ghcup_path .. ':' .. current_path
       end
 
-      -- Force GHC environment variables
-      vim.env.GHC_VERSION = '9.6.7'
-
-      -- BACKUP: Also configure lspconfig directly in case haskell-tools doesn't use our command
-      local lspconfig_ok, lspconfig = pcall(require, 'lspconfig')
-      if lspconfig_ok then
-        lspconfig.hls.setup {
-          cmd = {
-            'env',
-            'PATH=' .. ghcup_path .. ':' .. current_path,
-            ghcup_path .. '/haskell-language-server',
-            '--lsp'
-          },
-          on_attach = function(client, bufnr)
-            -- Only show this message once to verify it's working
-            if not vim.g.hls_correct_version_notified then
-              vim.notify('✓ HLS started with correct GHC environment', vim.log.levels.INFO)
-              vim.g.hls_correct_version_notified = true
-            end
-          end,
-        }
-      end
+      -- Do not force a specific GHC version or HLS binary; let the wrapper select per-project
 
       local ht = require 'haskell-tools'
+
+      -- Reduce LSP features that may spam errors when unsupported
+      vim.api.nvim_create_autocmd('LspAttach', {
+        callback = function(args)
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if not client or client.name ~= 'hls' then return end
+
+          -- If server does not support semantic tokens, prevent client requests
+          if not client.server_capabilities.semanticTokensProvider then
+            client.server_capabilities.semanticTokensProvider = nil
+          end
+        end,
+      })
 
       -- Set up autocommand for Haskell-specific keymaps and project detection
       vim.api.nvim_create_autocmd('FileType', {
