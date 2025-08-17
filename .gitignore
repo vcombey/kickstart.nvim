@@ -7,3 +7,4 @@ spell/
 
 # API Keys (keep secure)
 anthropic_key.lua
+openai_key.lua

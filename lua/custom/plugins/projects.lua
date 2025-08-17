@@ -37,7 +37,7 @@ return {
 
         -- Don't calculate root dir on specific directories
         -- Global gitignore here would be unwise
-        exclude_dirs = {},
+        exclude_dirs = { vim.loop.os_homedir(), '/' },
 
         -- Show hidden files in telescope
         show_hidden = false,

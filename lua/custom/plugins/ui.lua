@@ -228,6 +228,16 @@ return {
 
       -- Vertical split terminal (appears on the side)
       { '<leader>tv', '<cmd>ToggleTerm direction=vertical size=80<cr>', desc = 'Terminal (vertical)' },
+      -- Count-aware toggle (e.g. 2<C-\> opens terminal #2)
+      {
+        '<C-\\>',
+        function()
+          local count = vim.v.count1
+          require('toggleterm').toggle(count)
+        end,
+        mode = { 'n', 't' },
+        desc = 'ToggleTerm (count-aware)',
+      },
     },
 
     opts = {
@@ -247,11 +257,14 @@ return {
       -- Allow terminal to respond to insert mode key mappings
       insert_mappings = true,
 
+      -- Enable the default mapping to toggle terminals
+      open_mapping = [[<c-\>]],
+
       -- Remember terminal size between sessions
       persist_size = true,
 
       -- Default direction when using `:ToggleTerm` without arguments
-      direction = 'float',
+      direction = 'horizontal',
 
       -- Automatically close terminal when the process exits
       close_on_exit = true,
@@ -275,6 +288,12 @@ return {
         },
       },
     },
+
+    config = function(_, opts)
+      require('toggleterm').setup(opts)
+      -- Make Esc leave TERMINAL mode (equivalent to <C-\><C-n>)
+      vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { desc = 'Terminal normal mode' })
+    end,
   },
 
   { -- Modern file explorer with Git integration
@@ -336,6 +355,11 @@ return {
         -- Automatically expand to and highlight the current file
         -- Makes it easy to see where you are in the project structure
         follow_current_file = { enabled = true },
+
+        -- Show dotfiles (files starting with .)
+        filtered_items = {
+          hide_dotfiles = false,
+        },
 
         -- Use libuv for file watching (better performance and reliability)
         -- Automatically refreshes when files are added/removed outside Neovim

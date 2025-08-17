@@ -137,6 +137,15 @@ end)
 
 vim.env.AVANTE_ANTHROPIC_API_KEY = api_key
 
+-- Load OpenAI API key from dotfile if present
+local openai_key_file = config_path .. '/openai_key.lua'
+local ok_openai, openai_key = pcall(function()
+  return dofile(openai_key_file)
+end)
+if ok_openai and type(openai_key) == 'string' and openai_key ~= '' then
+  vim.env.AVANTE_OPENAI_API_KEY = openai_key
+end
+
 -- [[ Setting options ]]
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
@@ -311,15 +320,25 @@ vim.keymap.set('t', 'jk', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 -- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 -- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
--- Keybinds to make split navigation easier.
---  Use CTRL+<hjkl> to switch between windows
---
---  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-x>h', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-x>l', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-x>j', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-x>k', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
-vim.keymap.set('n', '<enter>', 'i', { desc = 'go to insert mode' })
+-- Normal/visual: use window commands directly
+vim.keymap.set({'n', 'v'}, '<C-x>h', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set({'n', 'v'}, '<C-x>l', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set({'n', 'v'}, '<C-x>j', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set({'n', 'v'}, '<C-x>k', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Insert: leave insert, then move
+vim.keymap.set('i', '<C-x>h', '<Esc><C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('i', '<C-x>l', '<Esc><C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('i', '<C-x>j', '<Esc><C-w><C-j>', { desc = 'Move focus to the lower window' })
+vim.keymap.set('i', '<C-x>k', '<Esc><C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Terminal: leave terminal-mode, then move
+vim.keymap.set('t', '<C-x>h', [[<C-\><C-n><C-w><C-h>]], { desc = 'Move focus to the left window' })
+vim.keymap.set('t', '<C-x>l', [[<C-\><C-n><C-w><C-l>]], { desc = 'Move focus to the right window' })
+vim.keymap.set('t', '<C-x>j', [[<C-\><C-n><C-w><C-j>]], { desc = 'Move focus to the lower window' })
+vim.keymap.set('t', '<C-x>k', [[<C-\><C-n><C-w><C-k>]], { desc = 'Move focus to the upper window' })
+
+vim.keymap.set({'n'}, '<enter>', 'i', { desc = 'go to insert mode' })
 
 -- Split current window vertically (creates a new window to the right)
 -- Alternative to the default `:vsplit` or `<C-w>v`
@@ -335,6 +354,26 @@ vim.keymap.set('n', '<leader>h', '<C-w>s', { desc = 'Split window horizontally' 
 -- Safer than `:q` as it won't close Neovim if it's the last window
 -- See `:help CTRL-W_c` for more information
 vim.keymap.set('n', '<leader>x', '<C-w>c', { desc = 'Close current window' })
+
+-- Toggle zoom of current window (tmux-like)
+-- Uses a dedicated tab to "zoom" and closes it to restore the previous layout
+local function toggle_zoom_current_window()
+  if vim.t._is_zoomed then
+    vim.cmd('tabclose')
+  else
+    vim.cmd('tab split')
+    vim.t._is_zoomed = true
+  end
+end
+
+vim.api.nvim_create_user_command('ToggleZoom', toggle_zoom_current_window, {})
+
+-- Normal/visual: call directly
+vim.keymap.set({ 'n', 'v' }, '<C-x>z', toggle_zoom_current_window, { desc = 'Toggle window zoom' })
+-- Insert: leave insert, then toggle
+vim.keymap.set('i', '<C-x>z', '<Esc>:ToggleZoom<CR>', { desc = 'Toggle window zoom' })
+-- Terminal: leave terminal-mode, then toggle
+vim.keymap.set('t', '<C-x>z', [[<C-\><C-n>:ToggleZoom<CR>]], { desc = 'Toggle window zoom' })
 
 -- [[ Buffer Management ]]
 -- Buffers represent files loaded in memory. These keymaps make it easier

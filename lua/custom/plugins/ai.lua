@@ -18,18 +18,17 @@ return {
 
     opts = {
       -- 🎯 CURSOR-LIKE EXPERIENCE - Minimal & Clean
-      provider = 'claude',
+      provider = 'openai',
 
       providers = {
-        claude = {
-          endpoint = 'https://api.anthropic.com',
-          model = 'claude-sonnet-4-20250514',
+        openai = {
+          endpoint = 'https://api.openai.com/v1',
+          model = 'gpt-5',
           timeout = 30000,
           extra_request_body = {
-            temperature = 0.75,
-            max_tokens = 20480,
+            temperature = 1,
           },
-          api_key_name = 'AVANTE_ANTHROPIC_API_KEY',
+          api_key_name = 'AVANTE_OPENAI_API_KEY',
         },
       },
 
